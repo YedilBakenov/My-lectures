@@ -1,0 +1,244 @@
+<html lang="en" xmlns:th = "http://www.thymeleaf.org">
+
+<link rel="stylesheet" type="text/css" th:href="@{'/css/bootstrap.min.css'}">
+<script th:src="@{'/js/bootstrap.bundle.js'}"></script>
+
+
+Spring Framework — это мощный и широко используемый фреймворк для разработки приложений на языке Java. 
+Он был создан для упрощения процесса разработки и обеспечения более высокого уровня модульности, 
+что позволяет разработчикам создавать высокоэффективные, надёжные и легко поддерживаемые приложения. 
+
+Отличия Spring от Spring Boot:
+
+Spring Framework. Требует конфигурации: Чтобы использовать Spring Framework,
+разработчику необходимо настроить множество аспектов, включая зависимости,
+конфигурации бинов и интеграцию с другими технологиями.
+
+
+Spring Boot. Это инструмент, предназначенный для упрощения процесса разработки приложений на базе Spring Framework.
+
+Упрощение настройки: Spring Boot предлагает концепцию "convention over configuration", минимизируя необходимость в явной конфигурации.
+
+
+1. Создаем проект на сайте:
+  
+https://start.spring.io/ 
+
+Project: Gradle - Groovy
+Language - Java
+Spring Boot - 3.1.8
+
+Project Metadata - пишем названия папок как хотим назвать, к примеру:
+Group - kz.bitlab.springboot
+Artifact(название проекта) - first-project
+
+Packaging - Jar
+Java - 17
+
+Добавляем зависимости:
+Dependencies - ADD DEPENDENCIES:
+-Spring Web
+-Lombock
+-Thymeleaf(альтернатива Jsp)
+
+
+Создаем проект - GENERATE - он сгенерирует готовый проект в архиве
+
+
+2. Разархивируем проект в IdeaProjects, гда хранятся все наши проекты
+
+3. Открываем проект в Idea - указываем на build.gradle -> open as project
+
+4. Далее с интернета подтягиваются автоматически все нужные библиотеки
+
+5. Могут возникнуть ошибки связанные с установленой версией Jdk на компьютере и неоходимой для Спринга, тогда нужно будет проедать следующие шаги ->
+
+a. скачать и установить необходимую версию JDK
+б. параметры -> переменные среды -> изменить параметры -> выбрать в PATH и HOME нужную версию JDK
+b. перезагрузить компьютер
+
+6.все файлы: html, картинки буду находится в resources
+
+7.рассказать про главный класс и как собирается проект
+
+8.показать как можно скачивать зависимости в build.gradle в dependencies через idea
+
+9.показать как можно удалять зависимости и показать что они удалятся также из project-structure -> libryries
+
+10.создаем controller.HomeController:
+
+@Controller
+public class HomeController {
+
+    @GetMapping(value = "/")
+
+    public String indexPage(){
+        return "index";
+    }
+}
+
+
+11. Создаем страницу html в templates, на которую ссылается indexPage
+
+12. Создать еще один метод контроллера, на которой будет переход из первого и обратно через a<href>:
+
+
+  @GetMapping(value = "/")
+    public String indexPage(){
+        return "index";
+    }
+
+    @GetMapping(value = "/about")
+    public String aboutPage(){
+        return "about_page";
+    }
+	
+13.GetMapping(value= "/") - @WebServlet(value ="/") + doGet()  - объяснить про это
+ return "index" - request.getRequestDispatcher("index.html").forward(request, responce) 
+
+14. Начать делать проект:
+
+1. Создаем модель, также добавляем аннотацию @Getter, @Setter, @AllArgsConstructor, @NoArgsConstructor :
+ 
+db.Film.java 
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Film {
+
+    private int id;
+    private String name;
+
+    private String author;
+
+    private String description;
+
+
+}
+
+2. Создаем класс DBManager в котором у нас будет и хранятся список всех фильмов, а также методы, с которыми мы будем работать:
+
+
+public class DBManager {
+
+    private static ArrayList<Film> films = new ArrayList<>();
+
+    static {
+        films.add(new Film(1, "Gatakka", "Andrew Niccol", "about space"));
+        films.add(new Film(2, "Harry Potter", "Andrew Niccol", "about space"));
+        films.add(new Film(3, "Gatakka", "Andrew Niccol", "about space"));
+        films.add(new Film(4, "Gatakka", "Andrew Niccol", "about space"));
+    }
+
+    public static ArrayList<Film>getFilms(){
+        return films;
+    }
+}
+
+
+3. Меняем главный запрос в HomeController:
+Model - Он используется для передачи данных от контроллера к представлению (view)
+ @GetMapping(value = "/")
+    public String indexPage(Model model){
+       model.addAttribute("list", DBManager.getFilms()); //request.setAttribute("list", DBManager.getFilms());
+        return "index";
+    }
+
+4. принимаем на главной html, меняем index:
+
+<body>
+    <h3 th:each="f: ${list}">
+        <span th:text="${f.getId()}"></span> -
+        <span th:text="${f.getName()}"></span> by
+        <span th:text="${f.getAuthor()}"></span> description:
+        <span th:text="${f.getDescription()}"></span>
+    </h3>
+</body>
+
+
+5. Добавляем метод в DBManager addFilm, также добавляем статичную переменную id:
+    private static int id = 5;
+	
+
+ public static void addFilm(Film film){
+        film.setId(id);
+        id++;
+        films.add(film);
+    }
+
+
+5. добавляем запрос post в контроллер:
+
+  @PostMapping(value = "/add-film")
+    public String addFilm(Film film){
+        DBManager.addFilm(film);
+        return "redirect:/"; // responce.sendRedirect("/");
+    }
+}
+
+6. создаем форму в index.html на добавление фильма:
+
+<form action="/add-film" method="post">
+    name: <input type="text" name="name">
+    author: <input type="text" name="author">
+    description: <input type="text" name="description">
+    <button>ADD</button>
+</form>
+
+7. создаем новый запрос и форму для добавления с указанием кастомных названий полей из html
+
+ <form action="/add-film-v2" method="post">
+    name: <input type="text" name="name_film">
+    author: <input type="text" name="author_film">
+    description: <input type="text" name="description_film">
+    <button>ADD</button>
+</form>
+
+ @PostMapping(value = "/add-film-v2")
+    public String addFilmV2(@RequestParam(name = "name_film") String name,
+                            @RequestParam(name = "author_film") String author,
+                            @RequestParam(name = "description_film") String description) {
+        Film film = new Film();
+        film.setAuthor(author);
+        film.setName(name);
+        film.setDescription(description);
+        DBManager.addFilm(film);
+
+        return "redirect:/";
+    }
+
+8. подтягиваем бутстрап:
+в папку static закидываем файлы бутстрапа
+
+9. на index.html добавляю ссылки на бутстрап:
+  <link rel="stylesheet" type="text/css" th:href="@{'/css/bootstrap.min.css'}">
+    <script th:src="@{'/js/bootstrap.bundle.js'}"></script>
+
+10. переделываем на красивый лад бутстрап главную страницу
+<html lang="en" xmlns:th = "http://www.thymeleaf.org"> - для подсказок
+
+создаем форму, таблицу.
+в выводе таблицы:
+ <tr th:each = "f: ${list}">
+            <td th:text="${f.getId()}"></td>
+            <td th:text="${f.getName()}"></td>
+            <td th:text="${f.getAuthor()}"></td>
+            <td th:text="${f.getDescription()}"></td>
+		 <td>
+               <button class="btn btn-sm btn-success">DETAILS</button>
+            </td>
+        </tr>
+
+
+	
+
+
+
+

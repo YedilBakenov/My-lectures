@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Задание16</title>
+</head>
+<body>
+<script>
+    let number = parseInt(prompt("Введите число"));
+    if(number%60==0) alert("ONLY " + (number/60) + " HOURS");
+    else alert((number/60).toFixed(0) + " HOURS and " +
+        (number - ((number/60).toFixed(0)*60)) + " MINUTES");
+</script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+xmlns:th="http://www.thymeleaf.org"
+
+./gradlew build --refresh-dependencies - применение изменений
+
+
+1. Создаем в контроллере новый метод, который создает нового пользователя:
+
+@PreAuthorize("isAnonymous()")
+@PostMapping(value = "/register")
+    public String addUser(User user, @RequestParam String rePassword){
+        userService.addUser(user, rePassword);
+        return "redirect:/sign-in";
+    }	
+
+
+2. Создаем в репозитории Permission query апрос на получение стандартной роли:
+
+ @Query("SELECT p from Permission p WHERE p.role='ROLE_USER'")
+    Permission getStandartPermission();
+
+
+
+3. Создаем в UserService новый метод на добавление нового User с проверкой на то, что в базе возможно уже есть User с 
+таким же паролем, а также с проверкой на rePassword, также сразу добавляем ему роль в методе:
+
+Также добавляем      private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final PermissionRepository permissionRepository;
+
+
+public void addUser(User newUser, String rePassword) {
+        User user = userRepository.findByEmail(newUser.getEmail());
+        if (user != null) {
+            return;
+        }
+
+        if (!newUser.getPassword().equals(rePassword)) {
+            return;
+        }
+
+        newUser.setPassword(passwordEncoder.encode(rePassword));
+
+        Permission role = permissionRepository.getStandartPermission();
+
+        newUser.setPermissions(List.of(role));
+
+        userRepository.save(newUser);
+    }
+
+
+
+4. Создаем страничку  добавлением User на sign-in
+
+   Используем модальное окно:
+
+   Дополнительно подтягиваем ссылки на бутстрап новые	
+
+	<div class="container">
+    <form class="form-signin" method="post" action="/auth">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <div class="alert alert-danger" role="alert">Invalid credentials</div>
+        <p>
+            <label for="email" class="sr-only">EMAIL</label>
+            <input type="text" id="email" name="email" class="form-control" placeholder="EMAIL" required=""
+                   autofocus="">
+        </p>
+        <p>
+            <label for="password" class="sr-only">Password</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Password"
+                   required="">
+        </p>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal" data-bs-target="#createUser">
+            Sign up
+        </button>
+    </form>
+    <div class="modal fade" id="createUser" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">ADD USER</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/register" method="post">
+                        <p>
+                            <label for="createUserEmail" class="sr-only">EMAIL</label>
+                            <input type="text" id="createUserEmail" name="email" class="form-control"
+                                   placeholder="Email" required="">
+                        </p>
+                        <p>
+                            <label for="createPassword" class="sr-only">Password</label>
+                            <input type="password" id="createPassword" name="Password" class="form-control"
+                                   placeholder="Password" required="">
+                        </p>
+                        <p>
+                            <label for="createRePassword" class="sr-only">Repeate Password</label>
+                            <input type="password" id="createRePassword" name="rePassword" class="form-control"
+                                   placeholder="Repeat Password" required="">
+                        </p>
+                        <p>
+                            <label for="createUserName" class="sr-only">User Name</label>
+                            <input type="text" id="createUserName" name="fullName" class="form-control"
+                                   placeholder="User Name" required="">
+                        </p>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">CREATE USER</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+4.Дополням код, чтобы не просто возвращал на sign-in ,когда вводите пароли когда не 
+совпадают или когда уже существует user с вводимым email
+
+возвращаем пока ошибку в url:
+
+добавляем в ендпоинт register:
+
+public String addUser(User user,@RequestParam String rePassword){
+        String result =  userService.addUser(user, rePassword);
+        return "redirect:/sign-in?" + result;
+    }
+
+изменяем в UserService:
+
+  User user = userRepository.findByEmail(newUser.getEmail());
+       if (user != null) {
+            return "errorEmail";
+        }
+
+        if (user != null || !newUser.getPassword().equals(rePassword)) {
+            return "errorPassword";
+        }
+
+        newUser.setPassword(passwordEncoder.encode(rePassword));
+
+        Permission role = permissionRepository.getStandartPermission();
+
+        newUser.setPermissions(List.of(role));
+
+        userRepository.save(newUser);
+
+        return "success";
+
+5. Выводим ошибку на фронте:
+
+на странице sign-in добавляем алерты с успешной либо неуспешной регистрацией:
+
+<div th:if="${param.success!=null}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Account created</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${param.errorEmail!=null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Email is busy</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${param.errorPassword!=null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Password are no same</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+Атрибут param в Thymeleaf используется для доступа к параметрам запроса из URL.
+
+
+6. Изменение пароля у User:
+
+создаем PostMapping:
+ @PreAuthorize("isAuthenticated()")
+    @PostMapping(value = "/change-password")
+    public String changePassword(@RequestParam String currentPassword,
+                                 @RequestParam String newPassword,
+                                 @RequestParam String reNewPassword){
+    String result = userService.changePassword(currentPassword, newPassword, reNewPassword);
+        return "redirect:/?" + result ;
+    }
+
+
+7. Создаем в сервисе метод на изменение пароля у User:
+
+  public String changePassword(String currentPassword, String newPassword, String reNewPassword) {
+        if(!passwordEncoder.matches(currentPassword, getCurrentUser().getPassword())){
+            return "errorCurrentPassword";
+        }
+
+        if(!newPassword.equals(reNewPassword)){
+            return "errorNewPassword";
+        }
+
+        getCurrentUser().setPassword(passwordEncoder.encode(newPassword));
+
+        userRepository.save(getCurrentUser());
+
+        return "success";
+    }
+
+
+8.  на главной странице добавляем форму на изменение пароля у зарегистрированного пльзователя:
+
+
+    <form action="/change-password" method="post">
+        <input type="password" name="currentPassword">
+        <input type="password" name="newPassword">
+        <input type="password" name="reNewPassword">
+        <button >CHANGE PASSWORD</button>
+    </form>
+
+9. доавляю видимость на страничке только для роли админ в index:
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+       xmlns:sec ="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"> - в шапку добавляю
+
+
+    <a sec:authorize="hasAnyRole('ROLE_ADMIN')" href="/admin">ADMIN PAGE</a>
+
+

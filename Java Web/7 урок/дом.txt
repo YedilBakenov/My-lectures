@@ -1,0 +1,216 @@
+DOM (объектная модель документа)
+
+Document Object Model, 
+сокращённо DOM – объектная модель документа,
+которая представляет все содержимое страницы в виде объектов, 
+которые можно менять. 
+
+DOM (Document Object Model) в JavaScript — это программный интерфейс, позволяющий программам читать и
+изменять содержимое веб-страницы, структурируя его как объектное представление документа.
+Это представление включает в себя структуру документа, стиль и содержимое, 
+позволяя взаимодействовать с текстом, стилями и структурой HTML через JavaScript.
+
+
+Объект document – основная «входная точка».
+С его помощью мы можем что-то создавать или менять на странице.
+
+DOM представляет HTML-документ в виде структуры, 
+где каждый элемент, атрибут, текстовое содержимое и другие узлы являются объектами, 
+которые могут быть манипулированы с помощью JavaScript.
+
+1. вызов функции с помощью метода onclick
+<input type="button" value="Click" onclick="show()">
+
+function show(){
+        alert("HELLO!")
+    }
+
+2. вызов функции через id 
+<input type="button" value="Click" id="element">
+<script>
+    function show(){
+        alert("HELLO!");
+    }
+    element.onclick=show;
+</script>
+
+
+есть минусы вызова данной функции так - он не будет вызывать два раза ее, допустим:
+вызовет только последнюю.
+
+вызов функции через id 
+<input type="button" value="Click" id="element">
+<script>
+    function show1(){
+        alert("HELLO!");
+    }
+	function show2(){
+        alert("HELLO!");
+    }
+    element.onclick=show1;
+    element.onclick=show2;
+</script>
+
+в таком случаем испозуем специальную функцию addEventListener('Click); :
+
+4. <input type="button" value="Click" id="element">
+<script>
+    function show1(){
+        alert("HELLO1!");
+    }
+    function show2(){
+        alert("HELLO2!");
+    }
+    element.addEventListener('click' , show1); click - это событие при нажатии
+    element.addEventListener('click' , show2);
+</script>
+
+
+5. value внутри инпута. Пример с изменением цвета.
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        div{
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid black;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<input type="text" id ="colorChange">
+<button id = "btn">Change color</button>
+<div id ="element"></div>
+<script>
+    function change(){
+       let color = colorChange.value;
+       element.style.background = color;
+    }
+
+    btn.addEventListener('click', change);
+</script>
+</body>
+</html>
+
+6.пример с изменением картинки
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button id ="btn"> Change IMJ</button>
+<div style="margin-top: 30px">
+    <img src="1.jpg" id="pic" width="150px">
+</div>
+</body>
+<script>
+   function change(){
+       pic.src = "2.jpg";
+   }
+   btn.addEventListener('click', change)
+</script>
+</html>
+
+
+7. Просмотр таргет и его id   -- event.target.id
+<body>
+   <input type="button" id = "elem1" value="Press">
+   <input type="button" id = "elem2" value="Press">
+<script>
+   function change(){
+       console.log(event.target.id);
+   }
+   elem1.addEventListener("click", change);
+   elem2.addEventListener("click", change);
+</script>
+</body>
+
+
+7. getElementsByTagname:
+<body>
+   <h3 class="text">Chose your skill: </h3>
+    <form id = "firstForm">
+        <input type="radio" value="junior" checked name="it"> Junior Devepoler
+        <input type="radio" value="middle" name="it"> Midle Devepoler
+        <input type="radio" value="senior" name="it"> Senior Devepoler
+    </form>
+
+<h3 class="text">FILL BELOW</h3>
+    <form id ="secondForm">
+        Name: <input type="text">
+        Surname: <input type="text">
+    </form>
+
+<p class="text">
+    THANK YOU FOR ATTENTION!
+</p>
+
+   <script>
+        let inputs = document.getElementsByTagName('input'); - возвращается массив элементов
+            console.log(inputs);
+            for (let inp of inputs){
+                console.log(inp.value);
+            }
+        </script>
+</body>
+
+8. Достаем инпуты у конкретной формы id
+
+ <script>
+        let inputs = firstForm.getElementsByTagName('input');
+            console.log(inputs);
+            for (let inp of inputs){
+                console.log(inp.value + " " + inp.checked);
+            }
+        </script>
+
+
+8.getElementsByClassname:   innerText innerHtml- достаем текст внутри тегов
+		
+ выводим текст тегов:
+
+   <script>
+        let texts = document.getElementsByClassName('text');
+            for (let t of texts){
+                console.log(t.innerText);
+            }
+        </script>
+
+
+9. замена контента, также замена через id
+<body>
+<p>
+    HELLO!
+</p>
+<p>
+    WORLD!
+</p>
+<button id="btn">Change</button>
+
+<script>
+    function change(){
+        document.body.innerHTML = "<h1>The content is Changed!</h1>";
+    }
+    btn.onclick=change;
+</script>
+</body>
+</html>
+
+либо через онклик в баттоне
+
+10. createElement, prepand, append
+
+<body>
+    <h1>HELLO BITLAB!</h1>
+    <script>
+        let elem = document.createElement("div");
+        elem.className = "first";
+        elem.innerHTML = "<h2>HELLO</h2>"
+        document.body.append(elem);
+    </script>
+</body>

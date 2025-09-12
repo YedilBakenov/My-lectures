@@ -1,0 +1,233 @@
+1. скачиваем Mamp: https://www.mamp.info/en/downloads/ - для работы с MySql
+2. запускаем мамп -> open WebStart page -> TOOLS -> phpadmin 
+3. создаем базу: Databases -> create
+4. проверяем пароли и пользователя: USER ACCOUNTS -> должен быть пользователь root и пароль root,
+если нет пароолля то отлично
+5. заходим в idea -> Databases-> + -> data source -> mysql
+6. проверяем через тест конекшен через логин, пароль, не даем имя датыбазы
+7. создаем датубазу, копируем url датыбазы
+8. правой кнопкой по локалхосту -> new-> Schema(новая база) - название новой базы
+9. можно посмотреть созданную датубазу на хосте на сайте
+10. Создаем таблицу в датабазе: new tableUI(teachers) и прописываем все переменные:
+id, name, surname, rating
+переменные в sql:
+BIGINT - целочисленный тип
+VARCHAR - строка максимум 255 символов
+TEXT
+integer 
+double
+AUTO_INCREMENT - автоматическое увеличение(счетчик)
+PRIMARY KEY (id) - выбранное поле не дублируется
+
+create table teachers(
+    id BIGINT AUTO_INCREMENT,
+    PRIMARY KEY (id),
+    name VARCHAR(255),
+    surname VARCHAR(255),
+    rating INTEGER
+);
+
+11.Проверяем через phpMyadmin
+12.Подобавлять вручную элементы в таблицу
+
+
+
+
+    static {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver"); -  Эта строка загружает класс JDBC-драйвера MySQL. В данном случае, используется драйвер "com.mysql.cj.jdbc.Driver", который является частью библиотеки MySQL Connector/J.
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bootcampee", "root", "root"); - Эта строка создает соединение с базой данных MySQL
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
+
+1. скачиваем postgreSql: https://www.enterprisedb.com/downloads/postgres-postgresql-downloads версию 12
+2. устанавливаем, stack builder не устанавливаем,
+3. открываем PGAdmin устанавливаем новую датубазу
+4. после этого закрываем pgAdmin
+5. заходим в idea -> Databases-> + -> data source -> postgres
+делаем тест коннекшен(проверка)
+6. Database - указываем ту базу которую создали в pgAdmin
+7. правой кнопкой по public - > new table "название таблицы"
+8. Создаем таблицу в датабазе: new tableUI(teachers) и прописываем все переменные:
+id, name, surname, rating
+переменные в sql:
+Serial - автоувеличение, целочисленное
+BIGINT - целочисленный тип
+VARCHAR - строка максимум 255 символов
+TEXT
+integer 
+double
+PRIMARY KEY (id) - выбранное поле не дублируется
+
+CREATE TABLE teachers(
+    id SERIAL PRIMARY KEY,
+    name varchar(255),
+    surname varchar(255),
+    salary int,
+    biografy text
+)
+
+
+9. добавляем элементы
+10. скачиваем PostgreSQL JDBC Driver из mvn repository
+11. сохраняем в lib
+12.Добавление элементов в таблицу через sql команду:
+id не пишем так как там автоинкремент
+INSERT INTO teachers(name, surname, rating)
+VALUES ('Ergnan', 'Erganov', 10);
+14.Вытащить весь список:
+SELECT * FROM teachers;
+15.Вытащить только отдельное поле:
+SELECT name,surname FROM teachers;
+16.Фильтр WHERE:
+SELECT * FROM teachers
+WHERE rating>5;
+
+13.Создаем новый класс DBConnection. Метод на вывод всех элементов. 
+
+import java.sql.*;
+
+   private static Connection connection;
+    private static String url = "jdbc:postgresql://localhost:5432/bitlab";
+    private static String login = "postgres";
+    private static String password = "postgres";
+
+
+    static {
+        try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(url, login, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+	
+   public static ArrayList<Teacher> getTeachers() {
+
+        ArrayList<Teacher> teachers = new ArrayList<>();
+
+        try {
+
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT * FROM teachers");
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Teacher teacher = new Teacher();
+                teacher.setName(resultSet.getString("name"));
+                teacher.setId(resultSet.getInt("id"));
+                teacher.setSurname(resultSet.getString("surname"));
+                teacher.setRating(resultSet.getInt("rating"));
+                teachers.add(teacher);
+            }
+            statement.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return teachers;
+    }
+
+14. добавление 
+  public static void addTeacher(Teacher teacher){
+        try {
+
+            PreparedStatement statement = connection.prepareStatement("" +
+                    "INSERT INTO teachers (name, surname, rating) " +
+                    "VALUES (?,?,?)");
+
+            statement.setString(1, teacher.getName());
+            statement.setString(2, teacher.getSurname());
+            statement.setInt(3, teacher.getRating());
+
+            statement.executeUpdate();
+            statement.close();
+            
+        }catch (Exception e){
+		
+        }
+    }
+
+15. Нахождение по id
+public static Teacher getTeacher(int id) {
+        Teacher teacher = null;
+        try {
+
+            PreparedStatement statement = connection.prepareStatement("" +
+                    "SELECT * FROM teachers WHERE id=?");
+
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                teacher = new Teacher();
+                teacher.setName(resultSet.getString("name"));
+                teacher.setId(resultSet.getInt("id"));
+                teacher.setSurname(resultSet.getString("surname"));
+                teacher.setRating(resultSet.getInt("rating"));
+            }
+
+            statement.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return teacher;
+    }
+16.Изменение
+public static void updateTeacher(Teacher teacher) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("" +
+                    "UPDATE teachers " +
+                    "SET " +
+                    "name = ?, " +
+                    "surname = ?, " +
+                    "rating = ?, " +
+                    "id = ? " +
+                    "WHERE id = ? ");
+
+            statement.setString(1, teacher.getName());
+            statement.setString(2, teacher.getSurname());
+            statement.setInt(3, teacher.getRating());
+            statement.setInt(4, teacher.getId());
+            statement.setInt(5, teacher.getId());
+
+            statement.executeUpdate();
+            statement.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+17.удаление
+public static void deleteTeacher(int id) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("" +
+                    "DELETE FROM teachers WHERE id = ?");
+
+            statement.setInt(1, id);
+            statement.executeUpdate();
+            statement.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'root'; - изменение пароля
+
+ 

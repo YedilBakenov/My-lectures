@@ -1,0 +1,105 @@
+Выполним полноценный CRUD с красивым дизайном на бутстрап
+
+
+1. создаем html страницу с линками бутстрап, чтобы втсавлять в другие страницы(как на java ee)
+вырезаем и вставляем в отдельный файл head.html:
+ <meta charset="UTF-8">
+    <title>Title</title>
+    <link type="text/css" rel="stylesheet" th:href="@{'/css/bootstrap.min.css'}">
+    <script th:src="@{'/js/bootstrap.bundle.js'}"></script>	
+
+далее вставляем на нужных нам страницах:
+
+<head th:insert ="head.html"></head>
+
+2. Разбор по получению объекта через id:
+	
+ a)  можно отправить id как через кнопку, так и через href
+   
+   <td><a class="btn btn-success btn-sm" th:href="@{'/details-film?id='+ ${f.getId()}}">DETAILS</a></td>
+
+
+ б) на стороне контроллера прописываем метод:
+  
+   @GetMapping(value = "/details-film")
+   public String getFilm(Model model,
+          @RequestParam(name = "id")int id){
+      Film film = DBManager.getFilm(id);
+      model.addAttribute("film", film);
+
+      return "details";
+   }
+
+ с)создаем html страничку, принимаем также через th: ``<div th:object="${film}">
+
+
+также есть второй способ отправки id:
+
+
+@GetMapping(value = "/details/{id}")
+    public String filmDetails(@PathVariable(name = "id")int id,
+                              Model model){
+        model.addAttribute("film", film);
+        return "details";
+    }
+
+
+  <td><a class="btn btn-success btn-sm" th:href="@{'/details/' + ${f.getId()}}">DETAILS</a></td>
+
+
+3. Разбор по удалению объекта
+
+@PostMapping(value = "/delete")
+    public String deleteFilm(@RequestParam(name = "id")int id) {
+         DBManager.deleteFilm(id);
+         return "redirect:/";
+    }
+
+public static void deleteFilm(int id){
+        films.removeIf(s-> s.getId()==id);
+    }
+
+4. Разбор по обновлению объекта
+
+  @PostMapping(value = "/update")
+    public String update(Film film){
+         DBManager.updateFilm(film);
+
+        return "redirect:/";
+    }
+
+
+`<div th:object="${film}">
+        <form action="update" method="post">
+            <input type="hidden" name="id" th:value="${film.getId()}">
+           <input type="text" name="title" th:value="${film.getTitle()}">
+           <input type="text" name="description" th:value="${film.getDescription()}">
+           <input type="text" name="rating" th:value="${film.getRating()}">
+            <button class="btn">UPDATE</button>
+        </form>
+   </div>
+	
+ public static void updateFilm(Film film){
+        for(Film f: films){
+            if(f.getId()==film.getId()){
+                f.setTitle(film.getTitle());
+                f.setDescription(film.getDescription());
+                f.setRating(film.getRating());
+            }
+        }
+
+    }
+
+
+
+Контроллеры в Spring Framework — это компоненты, используемые для обработки входящих HTTP-запросов к вашему веб-приложению. 
+В контексте Spring Framework:
+1. Model (Модель): Это часть приложения, которая отвечает за управление данными, логику и правила бизнеса.
+2. View (Представление): Это то, что представляет данные пользователю. В веб-приложении это обычно HTML-страницы, создаваемые с помощью шаблонизаторов, таких как Thymeleaf.
+3. Controller (Контроллер): Контроллер действует как посредник между моделью и представлением. Он обрабатывает входящие запросы,
+ обращается к модели за данными или выполнением операций и затем передает данные в представление.
+
+
+Аннотации: Spring использует аннотации для определения контроллеров и обработчиков запросов. Например, @Controller для класса и @GetMapping, @PostMapping для методов.
+
+

@@ -1,0 +1,53 @@
+INNER JOIN в SQL - это операция, которая позволяет соединять строки из таблиц на основе общего критерия. 
+Результатом INNER JOIN является набор строк, которые удовлетворяют условию соединения из обеих таблиц.
+Если строка в одной таблице соответствует строке в другой, она включается в результат. В противном случае, она исключается.
+
+1. Стандартный INNER JOIN (или просто JOIN)
+Соединяет две таблицы на основе условия.
+Пример: Если у нас есть таблицы cars и cities и мы хотим соединить их по общему столбцу city_id то запрос будет выглядеть так:
+
+SELECT c.id, c.brand, c.model, c.volume, c.price, c.date, c.city_id, city.city_name, city.region
+FROM cars c
+INNER JOIN cities city ON c.city_id = city.id
+ORDER BY id ASC;
+
+
+2. LEFT JOIN (или LEFT OUTER JOIN)
+Возвращает все строки из левой таблицы (cars) и соответствующие строки из правой таблицы (cities).
+Если совпадений в правой таблице нет, результат будет содержать NULL в столбцах из правой таблицы.
+Пример:
+
+SELECT c.id, c.brand, c.model, c.volume, c.price, c.date, c.city_id, city.city_name, city.region
+FROM cars c
+LEFT JOIN cities city ON c.city_id = city.id
+ORDER BY id ASC;
+
+3. RIGHT JOIN (или RIGHT OUTER JOIN)
+Возвращает все строки из правой таблицы (cities) и соответствующие строки из левой таблицы (cars).
+Если совпадений в левой таблице нет, результат будет содержать NULL в столбцах из левой таблицы.
+Пример:
+
+SELECT c.id, c.brand, c.model, c.volume, c.price, c.date, c.city_id, city.city_name, city.region
+FROM cars c
+RIGHT JOIN cities city ON c.city_id = city.id
+ORDER BY id ASC;
+
+4. FULL JOIN (или FULL OUTER JOIN)
+Возвращает все строки из обеих таблиц (cars и cities), соединяя их по совпадениям. 
+Если в одной из таблиц нет совпадения, в результатах появятся NULL в столбцах этой таблицы.
+Пример:
+
+SELECT c.id, c.brand, c.model, c.volume, c.price, c.date, c.city_id, city.city_name, city.region
+FROM cars c
+FULL JOIN cities city ON c.city_id = city.id
+ORDER BY id;
+
+5. CROSS JOIN
+Создаёт декартово xдвух таблиц, то есть соединяет каждую строку из одной таблицы со всеми строками из другой таблицы.
+Не требует условия соединения.
+Пример:
+
+SELECT c.id, c.brand, c.model, c.volume, c.price, c.date, c.city_id, city.city_name, city.region
+FROM cars c
+CROSS JOIN cities city;
+

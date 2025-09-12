@@ -1,0 +1,288 @@
+Spring Data JPA — это инструмент в экосистеме Spring, который помогает программистам легко работать с базами данных
+через Java код. Вместо того чтобы писать много кода для соединения с базой данных, выполнения запросов и преобразования 
+результатов в объекты Java, Spring Data JPA автоматизирует эти процессы. 
+
+Hibernate - это как переводчик между вашим программным кодом на Java и базой данных.
+Он делает так, чтобы ваш код мог понимать информацию из базы данных, 
+а также сохранять и изменять данные в базе данных. Это упрощает работу с базой данных,
+потому что вам не нужно писать сложные запросы на языке SQL. Вместо этого, 
+вы работаете с объектами в своем Java-коде, а Hibernate берет на себя всю тяжелую работу, связанную с базой данных.
+Таким образом, вы можете сосредоточиться на разработке своего приложения, не беспокоясь о деталях взаимодействия с базой данных. 
+
+Связь между Hibernate и Spring Data JPA заключается в том, что Spring Data JPA использует Hibernate в качестве одной из реализаций JPA.
+Это означает, что если вы используете Spring Data JPA в своем приложении, 
+то внутри Spring Data JPA будет использоваться Hibernate для взаимодействия с базой данных.
+
+Spring Data JPA предоставляет удобные аннотации и абстракции для работы с базой данных,
+в то время как Hibernate обеспечивает реализацию этих абстракций и выполняет фактическое взаимодействие
+с базой данных. Таким образом, Spring Data JPA и Hibernate совместно облегчают работу с базами данных в приложениях на Java.
+
+Репозитории
+Это интерфейсы, которые определяют методы для взаимодействия с базой данных.
+Spring Data JPA автоматически генерирует их реализации, что позволяет разработчикам
+сосредоточиться на логике приложения, а не на написании и поддержке SQL-запросов и кода доступа к данным.
+
+Сущности
+Сущности представляют таблицы базы данных в виде Java-классов.
+Они позволяют работать с записями базы данных как с обычными объектами Java,
+что делает код более наглядным и упрощает его поддержку.
+
+Запросы
+Spring Data JPA предоставляет гибкие способы формирования запросов к базе данных,
+включая автоматическую генерацию запросов на основе имен методов в репозиториях,
+возможность определять запросы с помощью аннотаций и использование критериев запросов для создания сложных запросов.
+
+
+
+
+
+1. Создаем новый проект с добавлением SpringDataJpa (добавляем драйвер на sql, spring data gpa)
+
+2. Подключаем постгреc как и в java ee, через idea
+
+3. Добавляем новую schema в базе, также потом указываем путь к ней:
+
+правой кнопкой по названию базы - new Schema.  Далее в properties -> URL  .../названиебазы?currentSchema=название схемы ->testconnection
+
+4. прописываем в файле application.properties конфигурацию для подключения базы:
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/postgres?currentSchema=springdatajpa
+spring.datasource.username=postgres
+spring.datasource.password=postgres
+
+5. создаем модель:
+
+@Entity  - Эта аннотация указывает, что класс Teacher является сущностью (Entity). говорит Hibernate, что этот класс должен быть сопоставлен с таблицей в базе данных.
+@Table(name = "TEACHERS") - Эта аннотация указывает, с какой таблицей в базе данных должна быть связана сущность Teacher. 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder -  Эта аннотация генерирует метод builder(), который позволяет создавать объекты класса Teacher с помощью паттерна Builder. 
+public class Teacher {
+
+    @Id  -   Эта аннотация указывает, что поле id является первичным ключом (Primary Key) сущности Teacher
+    @GeneratedValue(strategy = GenerationType.IDENTITY) - используется стратегия GenerationType.IDENTITY, которая означает, что значения первичного ключа будут автоматически генерироваться базой данных при вставке новых записей.
+    private int id;
+    private String name;
+    private String surname;
+    private int age;
+    private String subject;
+    private String email;
+    
+}
+
+
+6. в файле application.properties добавляем:
+
+spring.jpa.hibernate.ddl-auto=update - чтобы данные сохранялись
+spring.jpa.show-sql=true - будет показывать sql код
+
+spring.jpa.hibernate.ddl-auto=create-drop - чтобы каждый раз после перезапуска обновлялись(как у нас до этого в простой коллекции, для тестирования)
+
+7. перезапустить спринг и показать в консоли что появилось:
+Hibernate: create table teachers (id serial not null, age integer not null, name varchar(255), subject varchar(255), surname varchar(255), primary key (id))
+
+
+8.Добаляем каждому параметру аннотацию @Column для перехода в таблицу, а также указать добавляем  @Column(name = "EMAIL", unique = true, nullable = false) 
+где говорим что параметрдолжен быть уникальным в базе а также что он не может быть null:
+
+@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private int id;
+
+    @Column(name = "NAME")
+    private String name;
+
+    @Column(name = "SURNAME")
+    private String surname;
+
+    @Column(name = "AGE")
+    private int age;
+
+    @Column(name = "SUBJECT")
+    private String subject;
+
+    @Column(name = "EMAIL", unique = true, nullable = false)
+    private String email;
+
+@Column(name = "BIO", columnDefinition = "TEXT") - что будет тип text в таблице, а не varchar
+    private String bio;
+
+
+9. создаем контроллер
+
+@Controller
+public class HomeController {
+   @GetMapping("/")
+    public String homePage(){
+       return "home";
+   }
+}
+
+10. создаем сервис
+
+@Service
+public class TeacherService {
+	
+}
+
+11. создаем интерфейс TeacherRepository внутри папки repository, который наследутся от JpaRepository
+
+@Repository
+public interface TeacherRepository extends JpaRepository<Teacher, Integer>  - где Teacher - это тип сущности, а Integer>  тип его первичного ключа
+
+12. заполняем таблицу teachers вручную
+
+13. Внедряем зависимость репозитория в контроллере, также достаем все объекты из репозитория с помощью метода:
+@Controller
+public class HomeController {
+
+    @Autowired
+    private TeacherRepository teacherRepository;
+
+   @GetMapping("/")
+    public String homePage(Model model){
+       var teachers = teacherRepository.findAll();
+       model.addAttribute("list", teachers);
+       return "home";
+   }
+}
+
+
+все методы уэе содержаться в репозитории
+
+14. создаем страничку html home.
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table cellpadding="10px">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>AGE</th>
+            <th>BIO</th>
+            <th>EMAIL</th>
+            <th>NAME</th>
+            <th>SUBJECT</th>
+            <th>SURNAME</th>
+            <th>DETAILS</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="t: ${list}">
+          <td th:text ="${t.id}"></td>
+          <td th:text ="${t.age}"></td>
+          <td th:text ="${t.bio}"></td>
+          <td th:text ="${t.email}"></td>
+          <td th:text ="${t.name}"></td>
+          <td th:text ="${t.subject}"></td>
+          <td th:text ="${t.surname}"></td>
+          <td><a th:href="@{'/teacher/' + ${t.id}}">DETAILS</a></td>
+        </tr>
+    </tbody>
+</table>
+</body>
+</html>
+
+
+15. Добавляем детальный просмотр:
+
+в контроллере:
+
+@GetMapping("/teacher/{id}")
+    public String detailsTeacher(@PathVariable int id,
+                                 Model model){
+       Teacher teacher = teacherRepository.findById(id).orElse(null);
+       model.addAttribute("t", teacher);
+       return "teacher-details";
+
+   }
+
+создаем html teacher-details:
+
+<body>
+    <input type="text" th:value="${teacher.getName()}">
+    <input type="text" th:value="${teacher.getSurname()}">
+</body>
+
+
+16. Добавляем добавление учителя:
+
+@PostMapping("/teacher/add")
+
+    public  String addTeacher(Teacher teacher){
+       teacherRepository.save(teacher);
+
+       return "redirect:/";
+   }
+
+добавляем форму на добавление учителя на главной странице:
+
+
+<form action="/teacher/add" method="post">
+    <input type="text" name="name">
+    <input type="text" name="surname">
+    <input type="text" name="subject">
+    <input type="text" name="email">
+    <button type="submit">ADD</button>
+</form>
+
+
+17. Добавляем возможность редактирования:
+
+@PostMapping("/teacher/update")
+
+    public String updateTeacher(Teacher teacher){
+       teacherRepository.save(teacher);
+       return "redirect:/";
+   }
+
+ меняем details-teacher:
+ 
+<form action="/teacher/update" method="post">
+    <input type="hidden" th:value="${teacher.getId()}" name="id">
+    <input type="text" th:value="${teacher.getName()}" name="name">
+    <input type="text" th:value="${teacher.getSurname()}" name="surname">
+    <input type="text" th:value="${teacher.getSubject()}" name="subject">
+    <input type="number" th:value="${teacher.getAge()}" name="age">
+    <input type="text" th:value="${teacher.getBio()}" name="bio">
+    <input type="text" th:value="${teacher.getEmail()}" name="email">
+    <button type="submit">UPDATE</button>
+</form>
+
+
+
+18. удаление:
+
+ @PostMapping("/teacher/delete")
+
+    public String deleteTeacher(@RequestParam int id){
+       teacherRepository.deleteById(id);
+
+       return "redirect:/";
+   }
+
+меняем home.html:
+
+  <td>
+                <form action="/teacher/delete" method="post">
+                <input type="hidden" name="id" th:value="${t.id}">
+                <button type="submit">DELETE</button>
+                </form>
+            </td>
+
+
+
+
+18. ссылки на бустстрап:
+<link type="text/css" rel="stylesheet" th:href="@{'/css/bootstrap.min.css'}">
+<script th:src="@{'/js/bootstrap.bundle.js'}"></script>
+
+
+19. поговорить по переменную var

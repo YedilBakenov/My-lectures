@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <style>
+    .img{
+      display: flex;
+      justify-content: center;
+      height: 400px;
+    }
+
+    .slider{
+      display: flex;
+      justify-content: center;
+      height: 100px;
+      padding: 20px;
+    }
+    img{
+      margin: 5px;
+      height: 100%;
+    }
+  </style>
+</head>
+<body id = "body">
+<div class="container" id="container">
+  <div class="img" id="img">
+
+  </div>
+  <div class="slider" id="slider">
+
+  </div>
+  <div id="spanDiv"></div>
+</div>
+<script>
+  let images = [
+    "https://picsum.photos/id/237/300/200",
+    "https://picsum.photos/id/107/300/200",
+    "https://picsum.photos/id/397/300/200",
+    "https://picsum.photos/id/353/300/200",
+    "https://picsum.photos/id/491/300/200"]
+  let imageBig = document.createElement("img");
+  imageBig.src = images[0];
+  img.append(imageBig);
+
+  for (let i = 0; i<images.length; i++){
+    let imageSmall = document.createElement("img");
+    imageSmall.src = images[i];
+    imageSmall.addEventListener("click",changeImg)
+    slider.append(imageSmall);
+  }
+  function changeImg(){
+
+    let targetImage = event.target;
+    imageBig.src = targetImage.src;
+  }
+</script>
+</body>
+</html>

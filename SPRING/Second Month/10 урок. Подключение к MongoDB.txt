@@ -1,0 +1,105 @@
+В MongoDB элементы хранятся в виде документов внутри коллекций. Документ в MongoDB представляет собой набор пар "ключ-значение".
+Коллекции представляют собой группы документов. В отличие от таблиц в реляционных базах данных, коллекции в MongoDB не имеют фиксированной схемы. 
+Это означает, что документы в одной коллекции могут иметь разную структуру.
+
+[
+  {
+    "_id": ObjectId("60c72b2f9f1b5b5a8c6d9b8f"),
+    "name": "John Doe",
+    "age": 29
+  },
+  {
+    "_id": ObjectId("60c72b3f9f1b5b5a8c6d9b90"),
+    "name": "Jane Doe",
+    "age": 25,
+    "address": {
+      "street": "456 Elm St",
+      "city": "Othertown",
+      "zipcode": "67890"
+    },
+    "hobbies": ["painting", "cycling"]
+  }
+]
+
+
+
+
+1. Устанавлиеваем MongoDB -> https://www.mongodb.com/try/download/compass
+
+2. Новый проект -> Lombock -> Spring Web -> Spring Data Mongo DB -> 
+
+3. Создаем папку entity и в ней класс User, пишем аннотацию над классом @Document:
+
+Класс, помеченный этой аннотацией, обычно представляет коллекцию документов в базе данных MongoDB.
+
+@Document(collection = "users")
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class User {
+
+    @Id
+    private String id;
+    private String username;
+    private String email;
+
+}
+
+
+
+4.  Создаем новый класс сущность - Address
+
+
+@Document(collection = "addresses")
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Address {
+
+    @Id
+    private String id;
+    private String street;
+    private String city;
+    private String country;
+    private String postalCode;
+}
+
+
+5. Создаем для данных сущностей репозитории:
+
+public interface UserRepository extends MongoRepository<User, String> {
+}
+
+писать сверху аннотацию repository не нужно
+
+
+6. Создаем контроллер
+@RestController
+@RequestMapping(value = "/users")
+
+public class MainController {
+    @Autowired
+    UserRepository userRepository;
+
+    public void addUser(@RequestBody User user){
+        userRepository.save(user);
+    }
+
+    
+}
+
+
+
+7. копируем connectio MongoDB -> mongodb://localhost:27017
+
+
+8. добавляем в application.properties:
+
+server.port=8081
+spring.data.mongodb.uri=mongodb://localhost:27017/mongospring - такая база автоматически создастся в mongodb compose
+
+

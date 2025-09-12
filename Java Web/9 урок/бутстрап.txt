@@ -1,0 +1,87 @@
+Bootstrap - это свободный фреймворк, разработанный Twitter, 
+который позволяет разработчикам быстро и легко создавать красивые и отзывчивые веб-сайты и приложения.
+Bootstrap предоставляет набор инструментов для создания сетки, стилей, компонентов интерфейса и многого другого.
+
+В целом, Bootstrap - это мощный и гибкий инструмент для создания красивых и отзывчивых веб-сайтов и приложений. 
+Он может быть использован как начальная точка для вашего проекта, либо как полноценный фреймворк для разработки.
+Работаем через классы
+
+1. Прописываем линки
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
+скачать на компьютер локально файлы  - удобство что есть подсказки
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+<script src="/js/bootstrap.bundle.min.js"></script>
+
+2. Показать пример без бустрапа и с ним, как выглядит текст
+
+3. Класс Container - элементы центрируются и Container-fluid  (<div class="container">)
+ 
+4. Цвета: Utilities/Colors
+ text-primary - пишем внутри класса
+ показать примеры с цветами и параграфами
+можно также всегда подключить цвета со style
+
+    <div class="bg-primary p-3">Primary with contrasting color</div>
+    <div class="bg-secondary p-3">Secondary with contrasting color</div>
+    <div class="bg-success p-3">Success with contrasting color</div>
+    <div class="bg-danger p-3">Danger with contrasting color</div>
+    <div class="bg-warning p-3">Warning with contrasting color</div>
+    <div class="bg-info p-3">Info with contrasting color</div>
+    <div class="bg-light p-3">Light with contrasting color</div>
+    <div class="bg-dark p-3">Dark with contrasting color</div>
+    <div class="p-3" style="background-color: rgba(120,68,141,0.76)">Custom color</div>
+5. Длина
+ <div class="w-25 bg-warning border border-dark">Width 25%</div>
+    <div class="w-50 bg-warning border border-dark">Width 50%</div>
+    <div class="w-75 bg-warning border border-dark">Width 75%</div>
+    <div class="w-100 bg-warning border border-dark">Width 100%</div>
+только 4 значения 25, 50, 75, 100
+
+6. Border 
+ <div class="border border-2 border-primary">
+       <p>
+           asdasdasdasd
+       </p>
+   </div>
+
+7.Padding, значения от 1-5
+p-	, px, py, ps,pe,pb,pt
+
+7.Margin, значения от 1-5
+m-5, mx, my, ms,me,mb,mt
+
+8. d-flex
+<div class="d-flex border border-2 border-primary">
+       <p>
+           1
+       </p>
+       <p>
+           2
+       </p>
+       <p>
+           3
+       </p>
+   </div>
+
+d-flex justify-content-center в классе
+
+9.button Components/Button
+btn-lg, btn-sm, btn
+
+10.navbar Components/navbar
+
+11.form-control Forms/Form control - для инпутов в стиле бутстрапа class="form-control"
+forms/form-control
+
+12.Form-select form-control
+
+13.Tables Content/Tables
+<table class=table></table>
+
+14.layout
+деление на 12 колонок
+row и col-*-* являются основными классами Bootstrap для создания сетки. 
+Они позволяют создавать резиновые и отзывчивые макеты, адаптирующиеся под различные разрешения экрана.
+ вы можете использовать числа от 1 до 12. Число указывает количество столбцов, которые будет занимать данный элемент в ряду.

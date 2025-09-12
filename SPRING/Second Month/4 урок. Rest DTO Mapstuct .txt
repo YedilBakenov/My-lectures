@@ -1,0 +1,237 @@
+DTO (Data Transfer Object)
+DTO (Объект Передачи Данных) — это простой объект, который используется для инкапсуляции данных 
+и их передачи между подсистемами приложения. Основная цель DTO — перенос данных между слоями и сервисами,
+при этом сокращая количество вызовов методов.
+В контексте RESTful веб-сервисов, DTO обычно представляют данные запроса или ответа.
+
+
+В контексте DTO, инкапсуляция данных означает сбор необходимой информации в один объект для ее передачи.
+DTO содержит только те данные, которые нужны для выполнения определенной задачи или процесса, без лишних деталей о внутреннем устройстве системы.
+
+Пример
+Представьте ситуацию, когда пользователь заходит на страницу своего профиля в веб-приложении. 
+Вместо того чтобы делать отдельные запросы для получения данных пользователя, его настроек, истории заказов и т.д.
+(что потребовало бы множество вызовов методов), сервер может собрать всю эту информацию,
+поместить в DTO и отправить клиенту одним запросом. Такой подход упрощает логику клиента, 
+уменьшает нагрузку на сеть и ускоряет загрузку страницы для пользователя.
+
+В итоге, использование DTO позволяет упростить и оптимизировать обмен данными между различными частями приложения, 
+делая его более эффективным, уменьшая задержки и снижая общую нагрузку на систему.
+
+MapStruct — это библиотека, которая облегчает преобразование данных между различными объектами, называемое маппингом, 
+в Java-приложениях. В контексте Spring, MapStruct используется для автоматической генерации кода маппинга, что снижает количество рутинной работы и уменьшает вероятность ошибок.
+
+
+
+
+рассказать про взаимосвязь фронта и бэка, что фронт не должен страдать из-за изменение на бэкенде
+
+1. Создаем ItemDTO в отельной папке dto
+
+@Data
+public class ItemDTO {
+    private int id;
+    private String name;
+    private int price;
+    private String mark;
+    private int point;
+    private String description;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
+
+Класс ItemDTO содержит те же поля данных, но не содержит аннотации JPA или другие аннотации, связанные с сохранением в базе данных,
+так как его основная цель - передача данных между компонентами приложения.
+
+
+2. В сервисе Item добавляем меод на конвертацию в ItemDTO из Item:
+
+  private ItemDTO convertToDTO(Item item){
+        ItemDTO itemDTO = new ItemDTO();
+        itemDTO.setId(item.getId());
+        itemDTO.setName(item.getName());
+        itemDTO.setMark(item.getMark());
+        itemDTO.setPrice(item.getPrice());
+        itemDTO.setPoint(item.getPoint());
+        itemDTO.setCreatedAt(item.getCreatedAt());
+        itemDTO.setUpdatedAt(item.getUpdatedAt());
+        itemDTO.setDescription(item.getDescription());
+        return itemDTO;
+    }
+
+3. в сервисе и в контроллере меняем метод и запрос на получение всех itemsDTO и сразу проверяем в postman
+
+ public List<ItemDTO> getItems() {
+        List<ItemDTO> itemDTOS = new ArrayList<>();
+        List<Item> items = itemRepository.findAll();
+
+        for(Item it: items){
+            itemDTOS.add(convertToDTO(it));
+        }
+        return itemDTOS;
+    }
+
+
+ @GetMapping(value = "/all-items")
+    public List<ItemDTO> getItems(){
+       return itemService.getItems();
+    }
+
+4. объяснить и изменить если фронтендер попросит изменить какое -то поле на другое название:
+
+в сущности     private String mark; -> private String ocenka
+
+
+5. конвертировать выше способом не есть хорошо, поэтому подтягиваем след. библиотеку:
+
+https://mapstruct.org/documentation/installation/ - выбераем gradle
+
+
+подтягиваем зависимости в проект:
+
+ implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+ 
+ annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
+6. Создаем интерфейс ItemMapper:
+
+new -> mapper.ItemMapper
+
+@Mapper(componentModel = "spring")  
+public interface ItemMapper {
+
+    ItemDTO toDto(Item item);
+    Item toModel(ItemDTO itemDTO);
+
+    List<ItemDTO> toDtoList(List<Item> itemList);
+
+    List<Item> toModelList(List<ItemDTO> itemDTOS);
+}
+
+
+далее нажимаем gradle -> название проекта -> tasks -> build -> build - компилит проект, но не запускает
+
+7. удаляем выше методы, которые писали для конвертации в DTO
+
+также добваляем зависимость private final ItemMapper itemMapper; в сервис
+
+и вызываем через объект методы конвертирования:
+
+
+ public List<ItemDTO> getItems() {
+       return itemMapper.toDtoList(itemRepository.findAll());
+    }
+
+8. показать пример когда мы меняем название параметра в ItemDTO, 
+тогда измененное поле не будет учитываться при конвертировании и ьудет выдавать null в значении,
+для этого мы прописываем дополнительную логику в ItemMapper:
+
+String mark меняю на String grade в dto обновляю проект
+
+в ItemMapper меняем:
+
+    @Mapping(source ="mark", target = "grade")
+    ItemDTO toDto(Item item);
+
+    @Mapping(source = "grade", target = "mark")
+    Item toModel(ItemDTO itemDTO);
+
+просмотреть реализацию
+
+9. Меняем в остальных запросах в сервисе на отправку в формате ItemDTO:
+
+   @GetMapping(value = "/all-items")
+    public List<ItemDTO> getItems(){
+       return itemService.getItems();
+    }
+
+    @PostMapping(value ="/add-item" )
+    public ItemDTO addItem(@RequestBody ItemDTO item){
+        return itemService.createItem(item);
+    }
+
+    @PutMapping(value = "/update-item")
+    public ItemDTO editItem(@RequestBody ItemDTO item){
+        return itemService.updateItem(item);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ItemDTO getItem(@PathVariable int id){
+        return itemService.getItemById(id);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public void deleteItem(@PathVariable int id){
+        itemService.deleteItem(id);
+    }
+
+
+private final ItemRepository itemRepository;
+    private final ItemMapper itemMapper;
+
+    public List<ItemDTO> getItems() {
+       return itemMapper.toDtoList(itemRepository.findAll());
+    }
+
+    public ItemDTO createItem(ItemDTO item) {
+        String mark = calculateMark(item.getPoint());
+        item.setGrade(mark);
+        itemRepository.save(itemMapper.toModel(item));
+        return item;
+    }
+
+    private String calculateMark(Integer point) {
+        if (point == null) {
+            return null;
+        }
+
+        switch (point) {
+            case 1:
+            case 2:
+                return "BAD";
+            case 3:
+                return "NOT_BAD";
+            case 4:
+                return "GOOD";
+            case 5:
+                return "GREAT";
+            default:
+                return null;
+        }
+    }
+
+    public ItemDTO updateItem(ItemDTO item) {
+        if (item == null) {
+            return null;
+        }
+
+        ItemDTO item1 = getItemById(item.getId());
+
+        String mark = calculateMark(item.getPoint());
+        item1.setGrade(mark);
+        item1.setName(item.getName());
+
+        Item item2 = itemMapper.toModel(item1);
+        itemRepository.save(item2);
+
+        return item1;
+    }
+
+    public ItemDTO getItemById(int id) {
+        return itemMapper.toDto(itemRepository.findById(id).orElseThrow());
+    }
+
+    public void deleteItem(int id) {
+        itemRepository.deleteById(id);
+    }
+
+
+
+
+
+
+
+
+
+
+

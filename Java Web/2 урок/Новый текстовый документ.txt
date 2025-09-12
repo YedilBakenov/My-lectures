@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Our page</title>
+</head>
+<body>
+<h1 style="color: aqua; background-color: rgba(168,134,131,0.88);width: 50%; height: 100px">HELLO WORLD</h1>
+<p style="height: 200px; color: white  ;background-image: url('1.jpg')">
+    -f или --follow Получение последних данных лога в реальном времени
+    -tail N Получение последних N строк
+    –since Получение лога от даты
+    –until Получение лога до даты
+    Дата указывается как YYYY-MM-DD (2023-07-05)
+</p>
+<p style="font-size: 20px">
+    Значимость этих проблем настолько очевидна, что сложившаяся структура организации позволяет оценить значение форм
+    развития. Разнообразный и богатый опыт консультация с широким активом позволяет оценить значение системы обучения
+    кадров, соответствует насущным потребностям.
+</p>
+<p style="font-weight: 100">
+    Значимость этих проблем настолько очевидна, что сложившаяся структура организации позволяет оценить значение форм
+    развития. Разнообразный и богатый опыт консультация с широким активом позволяет оценить значение системы обучения
+    кадров, соответствует насущным потребностям.
+</p>
+<p style="font-style: italic">
+    Значимость этих проблем настолько очевидна, что сложившаяся структура организации позволяет оценить значение форм
+    развития. Разнообразный и богатый опыт консультация с широким активом позволяет оценить значение системы обучения
+    кадров, соответствует насущным потребностям.
+</p>
+<h2 style="border: 10px solid darkred; margin: 100px">HELLO WORLD!</h2>
+<h2 style="border: 10px solid darkcyan; margin: 150px 200px 300px">Hi!</h2>
+<p style="border: 2px solid red; margin-left: auto; width: 600px">
+    Значимость этих проблем настолько очевидна!!!
+</p>
+<p style="border: 2px solid red; margin-right: auto; width: 600px">
+    Значимость этих проблем настолько очевидна!!!
+</p>
+<p style="margin-top: 100px; border: 2px solid black; width: 700px; height: 500px; font-size: xxx-large;
+          padding-left: 1500px">
+    Значимость этих проблем настолько очевидна!!!
+</p>
+<p style="border: 2px solid red; margin:200px auto; display: flex; justify-content: center; width: 600px">
+    Значимость этих проблем настолько очевидна!!!
+</p>
+
+<div>
+    <div>
+        <input type="text">
+    </div>
+    <div>
+        <input type="text">
+    </div>
+    <div>
+        <input type="text">
+    </div>
+</div>
+</body>
+</html>

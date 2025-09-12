@@ -1,0 +1,212 @@
+"div" - это блочный элемент, который используется для группировки и стилизации других элементов на странице.
+Он не описывает содержимое внутри себя, но позволяет группировать и организовывать различные элементы на веб-странице. Контент внутри "div" 
+может включать другие элементы HTML.
+
+
+
+1. <link rel="stylesheet" type="text/css" href="style.css">
+создаем новый файл с расширением css, который идет в одной папке с основным
+
+2. body{
+	background-color: green;
+	color: white;
+}
+показать на примере как писать в файле css
+
+3. можно писать в самом файле html:
+<style type="text/css">
+		p{
+			border: 1px black solid;
+		}
+		h1{
+			color: red;
+		}
+	</style>
+
+4. через точку по имени класса прописываем стили в этом классе, как с указанием как отдельного элемента, так и с указанием всего класса:
+<div class="one">
+.one p{
+			color: grey;
+		}
+.one {
+			color: grey;
+		}
+
+
+показать примеры с дивом внутри дива
+
+5. .one > p {
+	только вложенные дивы изменятся 
+}
+
+6. можно сразу задавать стили разным селекторам:
+
+.название класса h1{
+
+}
+
+7. псевдоклассы
+разобрать с примерами:
+<style type="text/css">
+		a{
+			text-decoration: none;
+		}
+
+		a:Link{   
+			color: red;  применяемый к непосещенным ссылкам
+		}
+		a:visited{ 
+			color:green ; применяемый к посещенным ссылкам
+		}	
+		a:hover{
+			color: black; применяемый при наведении курсора на ссылку
+		}
+		a:active{
+			color: blue; применяемый в момент активации ссылки 
+		}
+
+		input:focus{
+			background-color: black;  определяющий стиль для текстового поля (input) в момент его фокусировки
+			color: white;
+		}
+</style>
+</head>
+<body>
+
+	<p>
+		<a href="https://www.ph4.ru ›">Link to</a>
+	</p>
+
+	<p>
+		<a href="http://www.randompage.ru">Link to</a>
+	</p>
+	
+	<p>
+		<a href="http://www.upread.ru">Link to</a>
+	</p>
+	
+	<p>
+		<input type="text" name="">
+	</p>
+	
+8. Дочерние элементы, псевдоклассы:
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+	<style type="text/css">
+		td{
+			border: 1px black solid;
+			padding: 5px;
+		
+		}
+
+		tr:first-child{
+			font-weight: bold;
+			background-color: blue;
+			color: whitesmoke;
+		}
+
+		td:first-child{
+			font-weight: bold;
+			background-color: red;
+		}
+		tr:first-child td:first-child{
+			background-color: blue;
+			color: whitesmoke;
+		}
+
+		tr:last-child{
+
+		}
+
+		tr:nth-child(odd)
+
+	</style>
+</head>
+<body>
+	<table>
+		<tr>
+			<td>
+				Student
+			</td>
+			<td>
+				Math
+			</td>
+			<td>
+				Fiz
+			</td>
+			<td>
+				Rus
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Misha
+			</td>
+			<td>
+				50
+			</td>
+			<td>
+				60
+			</td>
+			<td>
+				70
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Serik
+			</td>
+			<td>
+				20
+			</td>
+			<td>
+				30
+			</td>
+			<td>
+				40
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Berik
+			</td>
+			<td>
+				80
+			</td>
+			<td>
+				90
+			</td>
+			<td>
+				100
+			</td>
+		</tr>
+
+	</table>
+</body>
+</html>
+
+9.псевдоэлементы:
+
+<style type="text/css">
+	 
+	 p::firs-letter{
+
+	 }
+
+	 p::firs-line{
+	 
+	 }
+	</style>
+		<p>
+		фывфывфыв
+	</p>
+	<p>
+		фывфывфывфыв
+	</p>
+
+
+
+
+

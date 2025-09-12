@@ -1,0 +1,151 @@
+
+
+В классах, аннотированных как @Configuration, используются методы с аннотацией @Bean
+для создания и настройки бинов. Spring вызывает эти методы при старте приложения,
+чтобы получить объекты бинов и зарегистрировать их в контейнере Spring.
+
+Представьте, что вы строите сложную модель из конструктора LEGO. 
+Вам нужно заранее знать, какие детали и в каком порядке вам понадобятся,
+чтобы ваша модель работала как задумано. В мире программирования Spring Framework
+- это такой же конструктор, только для создания приложений.
+Аннотация @Configuration в Spring помогает нам собрать все необходимые части приложения вместе.
+
+@Configuration - это специальная метка (или аннотация), которую мы ставим на классы в нашем приложении,
+чтобы сказать Spring: "Эй, в этом классе есть инструкции о том, как собрать наше приложение!".
+Классы с аннотацией @Configuration содержат рецепты создания разных частей приложения, которые в Spring называются "бинами".
+
+Когда ваше приложение на Spring стартует, Spring ищет классы с аннотацией @Configuration, чтобы понять, какие бины нужно создать и как они связаны друг с другом.
+Это похоже на то, как если бы вы дали кому-то инструкции по сборке LEGO: "Сначала возьми деталь А, затем прикрепи к ней деталь B".
+
+
+Аннотация @Bean в Spring Framework используется для указания на то, что метод производит компонент, 
+управляемый Spring'ом, который следует зарегистрировать как бин в контексте Spring.
+Это один из способов определения бинов в конфигурации, основанной на Java.
+В отличие от аннотаций типа @Component, которые применяются непосредственно к классам, аннотация @Bean применяется к методам.
+
+Можно использовать аннотацию @Bean в методе обычного класса, не помеченного специальными аннотациями Spring (@Configuration, @Component и т.д.),
+однако, это не будет иметь ожидаемого эффекта без соответствующей конфигурации Spring.
+Spring не обрабатывает методы с аннотацией @Bean в классах, 
+которые не были явно объявлены как часть конфигурации Spring (через аннотации @Configuration, @Component).
+Это значит, что метод с @Bean в обычном классе не будет автоматически вызван Spring'ом для создания 
+и регистрации бина в контексте приложения.
+
+@Bean не может быть аннотацией над классом
+
+Создаем отдельную папку для новой сущности и также отдельную папку для нового репозитория
+
+
+1. Добавляем вторую базу в наш проект - + database
+
+2. добавляем в application properties, новую базу с новой schema:
+
+spring.db1.datasource.jdbcUrl=jdbc:postgresql://localhost:5432/postgres?currentSchema=spring
+spring.db1.datasource.username=postgres
+spring.db1.datasource.password=postgres
+spring.db1.datasource.driver-class-name=org.postgresql.Driver
+
+spring.db2.datasource.jdbcUrl=jdbc:postgresql://localhost:5432/bitlab?currentSchema=spring_data
+spring.db2.datasource.username=postgres
+spring.db2.datasource.password=postgres
+spring.db2.datasource.driver-class-name=org.postgresql.Driver
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+тут db1 идет как главная база
+
+
+spring.db2.datasource.driver-class-name=org.postgresql.Driver - нужно яво указывать, когда подключаешь две базу данных
+
+
+3. создаем папку конфиг и внутри нее конфигурационный файл с подключением к первой базе:
+
+@Configuration
+@EnableTransactionManagement
+
+@EnableJpaRepositories(
+        entityManagerFactoryRef = "entityManagerFactory1",
+        basePackages = "com.example.demo1.repository", // указать пакет для первой базы данных
+        transactionManagerRef = "transactionManager1"
+)
+
+public class FirstDB {
+    @Primary
+    @Bean(name = "dataSource")
+    @ConfigurationProperties(prefix = "spring.db1.datasource")
+    public DataSource dataSource() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Primary
+    @Bean(name = "entityManagerFactory1")
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+            EntityManagerFactoryBuilder builder,// использовать объект класса ORM
+            @Qualifier("dataSource") DataSource dataSource) {
+        HashMap<String, Object> properties = new HashMap<>();
+        properties.put("hibernate.hbm2ddl.auto", "update");"
+
+        return builder.dataSource(dataSource)
+                .properties(properties)
+                .packages("com.example.demo1.model")
+                .persistenceUnit("db1")
+                .build();
+    }
+
+    @Bean(name = "transactionManager1")
+    public PlatformTransactionManager transactionManager1(
+            @Qualifier("entityManagerFactory1") EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
+    }
+
+}
+
+
+EnableTransactionManagement -  включает работу с транзакциями, для работы с базами данных
+EnableJpaRepositories - работа с репозиториями
+@Primary указывает, что этот бин должен иметь приоритет, если существуют несколько кандидатов на автовнедрение одного и того же типа.
+ConfigurationProperties - связывает с application.properties внутри спринга
+
+Аннотация @Qualifier в Spring Framework используется для уточнения зависимости при автоматическом внедрении бинов.
+Когда в контексте Spring имеется несколько бинов одного и того же типа, @Qualifier позволяет указать, какой именно бин следует использовать для внедрения зависимости.
+
+
+
+4. Создаем репозиторий и модели для второй базы и указываем названия папок в классе SecondDB
+
+5. Создаем новый класс конфигуратион SecondDB ля подключения ко второй базе:
+
+@Configuration
+@EnableTransactionManagement
+@EnableJpaRepositories(
+        entityManagerFactoryRef = "entityManagerFactory2",
+        basePackages = {"com.example.demo1.secondrepository"}, // указать пакет для первой базы данных
+        transactionManagerRef = "transactionManager2"
+)
+public class SecondDB {
+    @Bean(name = "dataSource2")
+    @ConfigurationProperties(prefix = "spring.db2.datasource")
+    public DataSource dataSource2() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Bean(name = "entityManagerFactory2")
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory2(
+            EntityManagerFactoryBuilder builder,
+            @Qualifier("dataSource2") DataSource dataSource) {
+        HashMap<String, Object> properties = new HashMap<>();
+        properties.put("hibernate.hbm2ddl.auto", "update");
+
+        return builder.dataSource(dataSource)
+                .properties(properties)
+                .packages("com.example.demo1.secondarymodel") // Укажите пакет с сущностями для второй базы данных
+                .persistenceUnit("db2")
+                .build();
+    }
+
+    @Bean(name = "transactionManager2")
+    public PlatformTransactionManager transactionManager2(
+            @Qualifier("entityManagerFactory2") EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
+    }
+}

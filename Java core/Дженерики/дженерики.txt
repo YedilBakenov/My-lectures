@@ -1,0 +1,130 @@
+Дженерики - это механизм обобщения типов, 
+который позволяет создавать классы, методы, 
+которые могут работать с различными типами данных 
+без необходимости явного приведения типов. 
+
+Вместо того чтобы создавать отдельный класс или метод для каждого типа данных,
+вы можете создать универсальный класс или метод, 
+который может принимать любой тип данных.
+Можно хранить разного типа данные.
+Таким образом, дженерики позволяют создавать универсальные классы и методы,
+которые могут работать с разными типами данных.
+
+
+1й пример Обобщенный класс, чтобы можно было хранить объект любого типа:
+
+public class Box<T> {
+    private T item;
+    
+    public void setItem(T item) {
+        this.item = item;
+    }
+    
+    public T getItem() {
+        return item;
+    }
+}
+
+// Использование обобщенного класса
+Box<String> stringBox = new Box<>();
+stringBox.setItem("Привет, мир!");
+String message = stringBox.getItem();
+
+
+
+2ой пример Обобщенный метод:
+public <T> void printArray(T[] array) {
+    for (T element : array) {
+        System.out.println(element);
+    }
+}
+
+// Использование обобщенного метода
+
+public static void main(String[] args) {
+    Integer[] numbers = {1, 2, 3, 4, 5};
+    String[] names = {"Алиса", "Боб", "Карл"};
+
+    printArray(numbers);
+    printArray(names);
+}
+
+
+
+
+3ий пример Ограничение типов:
+
+public class Box<T extends Number> {
+    private T t;
+}
+
+Box теперь может использоваться только с числовыми типами (например, Integer, Float, Double).
+
+public class MathUtils {
+    public static <T extends Number> double average(T[] numbers) {
+        double sum = 0;
+        for (T number : numbers) {
+            sum += number.doubleValue();
+        }
+        return sum / numbers.length;
+    }
+}
+
+Это означает, что average теперь может использоваться только с числовыми типами (например, Integer, Float, Double).
+
+// Использование ограничения типов
+Integer[] integers = {1, 2, 3, 4, 5};
+Double[] doubles = {1.5, 2.5, 3.5, 4.5, 5.5};
+
+double averageInt = MathUtils.average(integers);
+double averageDouble = MathUtils.average(doubles);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+public class Element <T>{
+    private T elements[];
+    private int index;
+    
+    public Element(Class<T> tClass){
+        elements = (T[])Array.newInstance(tClass, 1000);
+    }
+    
+    public void addElement(T element){
+        elements[index] = element;
+        index++;
+    }
+    
+    public void print(){
+        for (int i = 0; i <index ; i++) {
+            System.out.println(elements[i]);
+        }
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+       Element<String> names = new Element<>(String.class);
+
+       names.addElement("Yedil");
+       names.addElement("Kuat");
+
+       names.print();
+
+    }
+}
+
+
+

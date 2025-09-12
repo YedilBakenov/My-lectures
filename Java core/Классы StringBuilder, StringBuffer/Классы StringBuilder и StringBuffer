@@ -1,0 +1,187 @@
+Лекция: Классы StringBuilder и StringBuffer
+
+1. Введение
+
+В Java строки являются неизменяемыми (immutable), что означает, что любая операция изменения строки создаёт новый объект. Это может быть неэффективно с точки зрения производительности, если строковые операции происходят часто, например, в циклах или при обработке больших объёмов данных. Для решения этой проблемы Java предоставляет классы StringBuilder и StringBuffer, которые позволяют изменять строки без создания новых объектов.
+
+
+
+2. Разница между String, StringBuilder и StringBuffer
+
+String:
+
+Неизменяемый (immutable).
+
+Любое изменение строки создаёт новый объект.
+
+Подходит для случаев, когда строка редко изменяется.
+
+StringBuilder:
+
+Изменяемый (mutable).
+
+Не синхронизирован (не потокобезопасен).
+
+Быстрее, чем StringBuffer.
+
+Используется, когда приложение не требует многопоточности.
+
+StringBuffer:
+
+Изменяемый (mutable).
+
+Синхронизирован (потокобезопасен).
+
+Медленнее, чем StringBuilder из-за затрат на синхронизацию.
+
+Используется в многопоточных приложениях.
+
+Синхронизация — это механизм, обеспечивающий безопасность данных при одновременном доступе из нескольких потоков. Она требует дополнительных вычислительных ресурсов.
+
+
+
+3. Конструкторы классов StringBuilder и StringBuffer
+
+Оба класса имеют схожие конструкторы:
+
+Без параметров:
+
+StringBuilder sb = new StringBuilder();
+StringBuffer sbf = new StringBuffer();
+
+Создаёт пустой объект с начальной ёмкостью 16 символов.
+
+С заданной строкой:
+
+StringBuilder sb = new StringBuilder("Hello");
+StringBuffer sbf = new StringBuffer("Hello");
+
+Создаёт объект с указанной строкой.
+
+С указанной ёмкостью:
+
+StringBuilder sb = new StringBuilder(50);
+StringBuffer sbf = new StringBuffer(50);
+
+Создаёт объект с начальной ёмкостью 50 символов.
+
+
+
+4. Основные методы
+
+4.1 append()
+
+Добавляет строку (или любой другой тип данных) в конец текущего объекта.
+
+StringBuilder sb = new StringBuilder("Hello");
+sb.append(" World");
+System.out.println(sb); // Hello World
+
+4.2 insert()
+
+Вставляет строку (или другой тип данных) в указанную позицию.
+
+StringBuilder sb = new StringBuilder("Hello World");
+sb.insert(6, "Java ");
+System.out.println(sb); // Hello Java World
+
+4.3 delete()
+
+Удаляет символы с указанного начального индекса до конечного (не включая).
+
+StringBuilder sb = new StringBuilder("Hello Java World");
+sb.delete(6, 11);
+System.out.println(sb); // Hello World
+
+4.4 reverse()
+
+Разворачивает строку.
+
+StringBuilder sb = new StringBuilder("Hello");
+sb.reverse();
+System.out.println(sb); // olleH
+
+4.5 replace()
+
+Заменяет часть строки в указанном диапазоне.
+
+StringBuilder sb = new StringBuilder("Hello World");
+sb.replace(6, 11, "Java");
+System.out.println(sb); // Hello Java
+
+4.6 capacity() и ensureCapacity()
+
+capacity(): возвращает текущую ёмкость объекта.
+
+ensureCapacity(): увеличивает ёмкость объекта, если текущей недостаточно.
+
+4.7 length()
+
+Возвращает длину строки.
+
+
+
+
+5. Потокобезопасность
+
+
+Если ваш код работает в многопоточном окружении, предпочтительно использовать StringBuffer, так как он синхронизирован. В противном случае используйте StringBuilder для лучшей производительности.
+
+Пример многопоточного использования StringBuffer:
+
+StringBuffer sb = new StringBuffer("Hello");
+
+Runnable task = () -> {
+    synchronized (sb) {
+        sb.append(" World");
+    }
+};
+
+Thread t1 = new Thread(task);
+Thread t2 = new Thread(task);
+t1.start();
+t2.start();
+
+
+
+6. Примеры из практики
+
+Пример 1: Построение строки в цикле
+
+StringBuilder sb = new StringBuilder();
+for (int i = 0; i < 5; i++) {
+    sb.append(i).append(" ");
+}
+System.out.println(sb); // 0 1 2 3 4
+
+Пример 2: Оптимизация конкатенации строк
+
+Неэффективный способ:
+
+String result = "";
+for (int i = 0; i < 5; i++) {
+    result += i + " ";
+}
+System.out.println(result); // 0 1 2 3 4
+
+Эффективный способ:
+
+StringBuilder sb = new StringBuilder();
+for (int i = 0; i < 5; i++) {
+    sb.append(i).append(" ");
+}
+System.out.println(sb); // 0 1 2 3 4
+
+
+
+7. Заключение
+
+Используйте StringBuilder для производительности в однопоточных приложениях.
+
+Используйте StringBuffer в многопоточных приложениях для потокобезопасности.
+
+Избегайте частой конкатенации строк с помощью String в циклах.
+
+
+
+

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task3</title>
+</head>
+<body>
+<script>
+    while (true) {
+        chooseExercise();
+    }
+
+    function chooseExercise() {
+        let exerciseList = [
+            exercise1,
+            exercise2,
+            exercise3,
+            exercise4,
+            exercise5,
+            exercise6,
+        ];
+
+        let exerciseNumber = prompt(
+            "Hello! \n\nPlease enter the exercise number from 1 to 6 that you would like to review. \n\n\t Press Cancel to end the program \n"
+        );
+        if (Boolean(exerciseNumber) == false) {
+            alert("Good bye!");
+        } else if (exerciseNumber < 1 || exerciseNumber > exerciseList.length) {
+            return alert("Sorry, please enter an exercise number from 1 to 6");
+        } else if (isNaN(exerciseNumber) == true) {
+            return alert(
+                "Sorry, please enter a number of the required exercise instead of " +
+                '"' +
+                exerciseNumber +
+                '"'
+            );
+        }
+        return exerciseList[exerciseNumber - 1]();
+    }
+
+    function exercise1() {
+        let n = prompt("Write N");
+        let arr = [];
+        let a = 0;
+        for (let i = 0; i < n; i++) {
+            a = prompt("Write number");
+            arr.push(a);
+        }
+        let m = prompt("Write number(2)");
+        let check = false;
+        for (let i = 0; i < n; i++) {
+            if (arr[i] == m) {
+                alert("YES " + i);
+                check = true;
+            }
+        }
+        if (check == false) alert("NO")
+    }
+
+    function exercise2() {
+        let arr = [0];  // почему без 0 не работает
+        let average = 1;
+        let a = 1;
+        let count = 0;
+        while (true) {
+            a = prompt("Write number");
+            if (a == 0) break;
+            else {
+                arr.push(a);
+                average *= a;
+                count++;
+            }
+        }
+        alert(Math.pow(average, 1 / count).toFixed(3));
+    }
+
+    function exercise3() {
+        let arr = [0];
+        let a;
+        let b = "";
+
+        for (let i = 0; i < arr.length; i++) {
+            a = prompt("Write number") * 1;
+            if (a == 0) break;
+            else {
+                arr.push(a);
+                if (a > 0)
+                    b += a + " ";
+            }
+        }
+        alert(b);
+    }
+
+    function exercise4() {
+        let n = prompt("Write number");
+        let arr = [];
+        let a;
+        let b = 1;
+
+        for (let i = 0; i < n; i++) {
+            a = prompt("Write number") * 1;
+            arr.push(a);
+            if (a > 0) b *= a;
+        }
+        alert(b);
+    }
+
+
+    function exercise5() {
+        let cars = [
+            {"name": "Toyota", "price": 1000, "year": 2015, "volume": 2.2},
+            {"name": "Mercedes", "price": 2000, "year": 2018, "volume": 3.8},
+            {"name": "Toyota", "price": 3000, "year": 2013, "volume": 2.0},
+            {"name": "Toyota", "price": 4000, "year": 2010, "volume": 2.5},
+            {"name": "BMW", "price": 5000, "year": 2011, "volume": 3.0},
+            {"name": "Lexus", "price": 6000, "year": 2017, "volume": 5.7},
+            {"name": "BMW", "price": 7000, "year": 2019, "volume": 5.2},
+            {"name": "Kia", "price": 8000, "year": 2012, "volume": 1.6},
+            {"name": "Vaz", "price": 9000, "year": 2019, "volume": 1.8},
+        ];
+
+        let choice = prompt("INSERT [1] TO SEARCH BY NAME\n" +
+            "\n" +
+            "INSERT [2] TO SEARCH BY YEAR\n" +
+            "\n" +
+            "INSERT [3] TO SEARCH BY ENGINE VOLUME\n" +
+            "\n" +
+            "INSERT [4] TO SEARCH BY PRICE\n" +
+            "\n" +
+            "INSERT [5] TO EXIT")
+
+        let massiveCar = "";
+        if (choice == 1) {
+            let name = prompt("INSERT NAME OF CAR:");
+
+            for (let i = 0; i < cars.length; i++) {
+                if (name == cars[i].name)
+                    massiveCar += cars[i].name + " - " + cars[i].year + " - " + cars[i].volume + " liters" + " - " + cars[i].price + " KZT" + "\n";
+            }
+            alert(massiveCar)
+        }
+        let massiveYears = "";
+        if (choice == 2) {
+            let yearStart = prompt("INSERT YEAR START FROM:");
+            let yearEnd = prompt("INSERT YEAR ENDS FROM:");
+
+            for (let i = 0; i < cars.length; i++) {
+                if (cars[i].year >= yearStart && cars[i].year <= yearEnd)
+                    massiveYears += cars[i].name + " - " + cars[i].year + " - " + cars[i].volume + " liters" + " - " + cars[i].price + " KZT" + "\n";
+            }
+            alert(massiveYears);
+        }
+
+        let massiveVolume = "";
+        if (choice == 3) {
+            let engineFrom = prompt("INSERT ENGINE VOLUME START FROM:");
+            let engineEnd = prompt("INSERT ENGINE VOLUME ENDS FROM:");
+
+            for (let i = 0; i < cars.length; i++) {
+                if (cars[i].volume >= engineFrom && cars[i].volume <= engineEnd)
+                    massiveVolume += cars[i].name + " - " + cars[i].year + " - " + cars[i].volume + " liters" + " - " + cars[i].price + " KZT" + "\n";
+            }
+            alert(massiveVolume);
+        }
+
+        let massivePrice = " ";
+        if (choice == 4) {
+            let priceStart = prompt("INSERT PRICE START FROM:");
+            let priceEnd = prompt("INSERT PRICE ENDS FROM:");
+
+            for (let i = 0; i < cars.length; i++) {
+                if (cars[i].price >= priceStart && cars[i].price <= priceEnd)
+                    massivePrice += cars[i].name + " - " + cars[i].year + " - " + cars[i].volume + " liters" + " - " + cars[i].price + " KZT" + "\n";
+            }
+            alert(massivePrice);
+        }
+
+        if (choice == 0) exit();
+
+    }
+
+    function exercise6() {
+
+        let name;
+        let surname;
+        let gpa;
+        let index = 0;
+        let massiveStudents = "";
+
+        while (true) {
+            let choice = prompt("PRESS 1 TO ADD STUDENT" + "\n" +
+                "PRESS 2 TO LIST STUDENT" + "\n" +
+                "PRESS 0 TO EXIT"
+            )
+
+            if (choice == 1) {
+                name = prompt(" INSERT NAME:");
+                surname = prompt(" INSERT SURNAME:");
+                gpa = prompt(" INSERT GPA:");
+
+                let newUser = {};
+                let studentList = [];
+                newUser.name = name;
+                newUser.surname = name;
+                newUser.gpa = gpa;
+                studentList[index] = newUser;
+                index++;
+                massiveStudents+=index+ ": " + "Name: " + newUser.name + " Surname: " + newUser.surname + " GPA: " + newUser.gpa + "\n"
+
+            } else if (choice == 2) {
+                alert(massiveStudents);
+            }
+            else if(choice==0) break;
+        }
+    }
+
+</script>
+</body>
+</html>

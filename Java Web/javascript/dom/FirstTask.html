@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FirstTask</title>
+</head>
+<body>
+<form id="myform">
+    Login: <input type="text" name="login" id ="invalid1" >
+    Password: <input type="password" name="password" id ="invalid2">
+    <button type="button" onclick="checkUser()">Login</button>
+</form>
+<script>
+
+    function checkUser() {
+        // let log = myform.elements.login;
+        // let pass= myform.elements.password;
+        if (invalid1.value == 'ilyas' && invalid2.value == 'qwerty')
+            alert("You are authenticated")
+       else invalid1.style.border = "2px solid orange";
+            invalid2.style.border = "2px solid orange";
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<div layout:fragment="siteContent"></div> - у главного лояута
+
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org". - у всех остальных страниц
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="main-layout.html">
+<div layout:fragment="siteContent"> 
+
+
+Thymeleaf Layout Dialect — это дополнение к Thymeleaf, которое предоставляет возможности 
+для создания макетов и переиспользования шаблонов в ваших веб-приложениях.
+
+Основные возможности:
+Макеты: Позволяет определить общий базовый макет (например, общий вид страницы, включая шапку,навигационное меню), 
+который может быть использован многократно в различных частях приложения.
+
+Фрагменты: Это позволяет определить повторно используемые части HTML, 
+которые можно включать в другие шаблоны. Например, можно создать фрагмент для формы регистрации пользователя и использовать его на разных страницах.
+
+Декорация: Thymeleaf Layout Dialect позволяет "украшать" страницы, применяя к ним макеты.
+Это означает, что вы можете разрабатывать страницы, сконцентрировавшись на их уникальном содержимом,
+и затем применять к ним общий макет, который добавит шапку, подвал и другие общие элементы дизайна.
+
+Параметризация фрагментов: Можно передавать параметры в фрагменты для изменения их поведения или
+внешнего вида в зависимости от контекста, в котором они используются.
+
+
+1. Bootstrap -> list group:
+
+создаем новый html sidebar, куда закидываем listgroup:
+
+<div class="list-group">
+    <a href="#" class="list-group-item list-group-item-action">
+        The current link item
+    </a>
+    <a href="#" class="list-group-item list-group-item-action">A second link item</a>
+    <a href="#" class="list-group-item list-group-item-action">A third link item</a>
+    <a href="#" class="list-group-item list-group-item-action">A fourth link item</a>
+</div>
+
+
+2. в main-page.html меняем расположение:
+Также добавляем row и col, делим в col-3 -вставляем sidebar, а в col-9 нашу страницу:
+
+3. добавляем footer:
+<div class="container-fluid p-5 bg-dark text-light">
+  <div class="row">
+    <div class="col-12">
+      <h5 class="text-center">Copyright &copy; 2024 ALL Rights Reserved</h5>
+    </div>
+  </div>
+</div>
+
+4. В main-page под container вставляем footer и прописываем в container:
+<div class="container-fluid mt-3" style="min-height: 750px"> -отталкиваем вниз
+<div th:insert="footer.html"></div>
+
+5.в details-film.html вставляем также footer и прописываем в container, добавляем sidebar:
+<div class="container-fluid mt-3" style="min-height: 750px">
+<div th:insert="footer.html"></div>
+
+6. тоже самое делаем для страницы add-film-page.html
+
+7. в add-page также добавляем side-bar d col-3
+
+Сделали везде изменения и теперь стои задача сделать sidebar справа, а не слева
+
+8. Для таких изменений мне нужна будет библиотека: Thymeleaf Layout Dialect
+Благодаря этой библиотеки мы сможем строить свои макеты	
+
+Thymeleaf Layout Dialect -> версия -> Gradle описание копируем(implementation group: 'nz.net.ultraq.thymeleaf', name: 'thymeleaf-layout-dialect', version: '3.3.0')
+
+добавляем ее в dependencies в build.gradle
+
+9. создаем main-layout.html (главный макет) и подтягиваем Thymeleaf Layout Dialect ->  Namespace 
+копируем все данные из main-page, но удаляем таблицу!, так как она будет являться переменной
+
+скачиваем шапку Thymeleaf Layout Dialect ->  Namespace и вставляем ее в нашу шапку в main-layout.html
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" :
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+
+вместо удаленной таблице пишем:  название siteContent будет являться кастомным
+
+ <div class="col-9">
+            <div layout:fragment="siteContent"></div>
+        </div>
+
+10. переходим на главную страницу и переписывам ее, теперь только будем использовать content в main=page:
+
+также добавляем в шапку обязательно: 
+
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="main-laout.html"
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+                layout:decorate="main-layout.html">
+
+            <div layout:fragment="siteContent">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>TITLE</th>
+                        <th>DESCRIPTION</th>
+                        <th>RATING</th>
+                        <th>DETAILS</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="f:${list}">
+                        <td th:text="${f.getId()}"></td>
+                        <td th:text="${f.getTitle()}"></td>
+                        <td th:text="${f.getDescription()}"></td>
+                        <td th:text="${f.getRating()}"></td>
+                        <td><a th:href="@{'details-film?id=' + ${f.getId()}}" class="btn btn-secondary btn-sm">DETAILS</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+</html>
+
+
+11.Проворачиваем тоже самое с add-film-page
+
+также добавляем в шапку обязательно: 
+
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="main-laout.html"
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="main-laout.html">
+
+<div layout:fragment="siteContent">
+        <div class="row mt-2">
+            <div class="col-12">
+                <label>
+                    TITLE
+                </label>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-12">
+                <input type="text" class="form-control" name="title">
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-12">
+                <label>
+                    DESCRIPTION
+                </label>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-12">
+                <textarea class="form-control" rows="5" name="description"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <label>
+                    RATING
+                </label>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-12">
+                <input type="number" class="form-control" name="rating">
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-12">
+                <button class="btn btn-success btn-sm">ADD FILM</button>
+            </div>
+        </div>
+    </div>
+</html>
+
+
+
+12. тоже самое делаем с details-film
+
+
+13. Сделаем sidebar с другой стороны:
+
+поменяли меставми sidebar
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:insert="head">
+</head>
+<body>
+<div th:insert="navbar"></div>
+<div class="container-fluid mt-3" style="min-height: 750px">
+    <div class="row">
+        <div class="col-9">
+            <div layout:fragment="siteContent"></div>
+        </div>
+        <div class="col-3" th:insert="sidebar.html"></div>
+    </div>
+</div>
+<div th:insert="footer.html"></div>
+</body>
+</html>
+
+14. 

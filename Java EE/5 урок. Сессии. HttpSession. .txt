@@ -1,0 +1,193 @@
+HttpSession, являются частью Java EE и широко используются для управления состоянием 
+и сохранения данных на сервере между запросами веб-приложений
+
+В Java EE (Enterprise Edition), сессии используются для сохранения информации о взаимодействии пользователя 
+с веб-приложением. Это позволяет приложению "помнить" состояние пользователя между разными запросами, 
+что особенно важно в веб-приложениях, где HTTP-протокол по своей природе не поддерживает сохранение состояния между запросами.
+
+пример с тележкой в магазине про объяснение сессии
+
+добавление модального окна:
+
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    + ADD CITY
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form action="add-city" method="post">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                            <div class="mt-2">
+                                CITY NAME:
+                            </div>
+                            <div class="mt-2">
+                                <input type="text" placeholder="INSERT CITY:" name="city_name" class="form-control">
+                            </div>
+                            <div class="mt-2">
+                                REGION:
+                            </div>
+                            <div class="mt-2">
+                                <input type="text" placeholder="INSERT REGION:" name="region" class="form-control">
+                            </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success">ADD CITY</button>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
+ 
+добавление сервлета add-city
+
+
+1. Создаем SessionServlet
+  
+@WebServlet(value = "/session-page")
+public class SessionServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        HttpSession session = request.getSession();  - возвращает текущую сессию
+        session.setAttribute("userName", "Yedil");
+    }
+}
+
+на главном севрлете добавляем
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String text = (String) session.getAttribute("userName");
+        out.println(text);
+
+и после того как перейдем на сервлет session-page - увидим в консоли Yedil
+
+
+2. Создадим в navbare авторизацию
+
+<li class="nav-item">
+  <a class="nav-link text-light" href="/login">LOGIN</a>
+</li>
+
+3. Создадим сервлет LoginServlet
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.sendRedirect("/login.jsp");
+    }
+
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+
+        User user = DBConnector.getUser(email);
+
+        if(user!=null && user.getPassword().equals(password)){
+            HttpSession session = request.getSession();
+            session.setAttribute("currentUser", user);
+
+            response.sendRedirect("/profile");
+
+        }else{
+            response.sendRedirect("/login?error");
+        }
+    }
+
+
+4. Создаем login.jsp 
+
+5. Создаем новую таблицу с id, email, password, full_name. Заполняем ее
+
+6. Создаю сущность, класс User
+ private int id;
+    private String email;
+    private String password;
+    private String full_name;
+
+
+7. Добавляем в DBConnector новый метод, получаем не по id, а по String email - public static User getUser(String email) SELECT * FROM users WHERE email = ?
+
+8. Дополнить loginServlet, где принимаем отправленного Usera в сетоде post
+
+	 if(user!=null && user.getPassword().equals(password)){
+            HttpSession session = request.getSession();
+            session.setAttribute("currentUser", user);
+
+            response.sendRedirect("/profile");
+
+        }else{
+            response.sendRedirect("/");
+        }
+
+
+9. Создаем ProfileServlet
+	 User currentUser = (User) request.getSession().getAttribute("currentUser");
+
+        if(currentUser!=null){
+            request.getRequestDispatcher("/profile.jsp").forward(request, response);
+        }else {
+            response.sendRedirect("/login");
+        }
+
+
+
+10. Создаем profile.jsp
+просто для начала выводим HELLO USER!
+
+
+11. Работаем с навбаром
+вставляем в навбаре:
+<%
+    User currentUser = (User) request.getSession.getAttribute("currentUser");
+%>
+
+Добавляем дропдавн из бутстрапа:
+ <%
+                    if (currentUser != null) {
+                %>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        <%=currentUser.getFull_name()%>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/profile">PROFILE</a></li>
+                        <li><a class="dropdown-item" href="/">Settings</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="/logout">LOG OUT</a></li>
+                    </ul>
+                </li>
+
+
+
+добавили возможность видеть user если мы зашли
+добавление dropdown
+
+12.создание logOut сервлета
+request.getSession().removeAttribute("currentUser"); - удаление аттрибута, соответсвенно выйдем из нашего аккаунта
+response.sendRedirect("/login");
+
+13. создаем видимость вкладок в навбаре и где есть возможности бобавления только для зарегистрированных пользователей
+
+меняем jsp city видисоть добавления
+
+14. Изменить в навбаре добавление пользователей
+
+15. Изменяем видимость непосредственно в самом сервлете AddCarServlet:
+ User user = (User) request.getSession().getAttribute("currentUser");
+
+        if (user != null) {
+            request.setAttribute("cities", DBConnection.getCities());
+
+            request.getRequestDispatcher("/html/add-page.jsp").forward(request, response);
+        }else response.sendRedirect("/login");	
+
+
+16. Изменяем видимость в jsp details

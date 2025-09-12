@@ -1,0 +1,72 @@
+request.setAttribute("mas", students2); -  используется для сохранения объекта students2 в атрибуте запроса
+
+RequestDispatcher dispatcher = request.getRequestDispatcher("/checked-students"); - используется для получения объекта RequestDispatcher,
+который представляет собой механизм перенаправления запроса на другой сервлет или JSP страницу. 
+dispatcher.forward(request, response); - Когда вызывается dispatcher.forward(), 
+текущий сервлет передает управление другому сервлету или JSP странице. Другой сервлет или JSP страница будет обрабатывать запрос дальше.
+
+Можно объединить в один файл:
+request.getRequestDispatcher("/checked-students").forward(request, responce);
+Сервлет подготавливает все данные, которые мы можем отправить на jsp на другой сервлет.
+
+
+
+response.sendRedirect("main"); - переведт на нужный сервлет
+
+
+1. Сохраняем все файлы jsp в web
+2. Можно перенаправлять  request.getRequestDispatcher("index.jsp").forward(request, response);
+или response.sendRedirect("index.jsp");
+3. Скриплет - пространство Java. Открывается пространство <% код java %>
+4. Подключение Bootstrap
+CDN links:
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+
+5. Пример с бустрапом и card
+ <div class="container">
+        <div class="row">
+            <%
+                for (int i = 0; i <10 ; i++) {
+            %>
+            <div class="col-3">
+                <div class="card">
+                    <img src="https://img.freepik.com/free-photo/a-cupcake-with-a-strawberry-on-top-and-a-strawberry-on-the-top_1340-35087.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                    </div>
+                </div>
+            </div>
+
+            <%
+                }
+            %>
+        </div>
+    </div>
+
+6. устанавливаем bootstrap себе локально на компьютер:
+распаковываем и сохраняем в web.
+<link href="/css/bootstrap.css" rel = "stylesheet"> - преимущества, что показывает все классы
+
+7. показать пример с таблицей
+request.setAttribute();
+request.getRequestDispatcher("название", ).forward(request, responce);
+request.getAttribute("название");
+
+в td - <%=student.getId()%> - быстрый вывод out.print
+
+8.привязываем navbar
+
+9.Вывод повторяющихся элементов в отдельную страницу c помощью include:
+Создаем 2 файлa:
+1) jsp navbar
+  <%@include file="navbar.jsp"%>
+2) jsp head
+<link href="/css/bootstrap.css" rel = "stylesheet" type="text/css">
+<script type="text/javascript" src="/js/bootstrap.bundle.js"></script>
+
+
+<% for (Product product : productList) { %>
+    <a href="/details?id=<%= product.getId() %>">Просмотр товара: <%= product.getName() %></a><br>
+<% } %>

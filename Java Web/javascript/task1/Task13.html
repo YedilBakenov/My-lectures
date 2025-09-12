@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Задание13</title>
+</head>
+<body>
+<script>
+    alert("Choose your branch:" + "\n" +
+        "1 - Science, 2 - Humanitarian subjects, 3 - Art, 4 - Sport:");
+    let branch = prompt();
+        if (branch == 1) {
+            alert("1 - Math, 2 - Physics:");
+            let science = prompt();
+            if (science == 1) alert("You are Financier");
+            else if (science == 2) alert("You are Engineer");
+        } else if (branch == 2) {
+            alert("1 - History, 2 - Foreign Languages:");
+            let humatitarian = prompt();
+            if (humatitarian == 1) alert("You are Historic or Diplomat ");
+            else if (humatitarian == 2) alert("You are Translator");
+        } else if (branch == 3) {
+            alert("1 - Drawing, 2 -Singing:");
+            let art = prompt();
+            if (art == 1) alert("You are Painter or Architect");
+            else if (art == 2) alert("You are Singer or Tamada");
+        } else if (branch == 4) {
+            alert("1 - Team, 2 - Individual:");
+            let sport = prompt();
+            if (sport == 1) alert("You are footballer or Basketball player");
+            else if (sport == 2) alert("You are boxer or tennis player");
+    }
+</script>
+</body>
+</html>

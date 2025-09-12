@@ -1,0 +1,216 @@
+Начинаем писать свои кастомные запросы на получение данных из базы
+
+
+1. Запрос на получение объекта не по id, а по любому параметру
+
+ прописываем в репозитории:
+
+  Teacher findByEmail(String email);
+
+прописываем в контроллере:
+
+   @GetMapping("/teacher/details/{email}")
+    public String detailsTeacher(@PathVariable String email,
+                                 Model model){
+        Teacher teacher = teacherRepository.findByEmail(email);
+        model.addAttribute("teacher", teacher);
+        return "teacher-details";
+
+    }
+
+добавляем в home.html:
+
+   <th>DETAILS BY EMAIL</th>
+    <td><a th:href="@{'/teacher/details/' + ${t.email}}">DETAILS</a></td>
+
+
+2. Создание более сложного запроса и реализуем уже через бин сервиса
+
+Создаем новый запрос, который будет искать по соответствию тому, что мы написали в инпуте в кастомных параметрах, которые мы укажем
+
+
+Аннотация @Query используется в Spring Data JPA для определения пользовательского запроса JPQL (Java Persistence Query Language)
+Это позволяет выполнить сложные запросы к базе данных, которые не могут быть легко сформированы с использованием именованных методов Spring Data.
+
+JPQL, или Java Persistence Query Language, — это язык запросов, предоставляемый спецификацией Java Persistence API (JPA) для выполнения запросов к базам данных в стиле SQL, 
+но с той разницей, что JPQL оперирует объектами, их полями и методами, а не таблицами и колонками базы данных. 
+
+операто ilike работает аналогично оператору LIKE, но является нечувствительным к регистру. 
+	
+в контроллере:
+
+  @GetMapping("/teacher/search")
+    public String getTeachers(@RequestParam String search,
+                                 Model model){
+       var teachers = teacherService.search(search);
+       model.addAttribute("list", teachers);
+        return "home";
+
+    }
+
+в репозитории:
+
+   @Query("SELECT t FROM Teacher t " +
+          "WHERE t.name ilike concat('%', :search, '%') " +
+          "OR t.surname ilike concat('%', :search, '%') " +
+          "OR t.email ilike concat('%', :search, '%')")
+  List<Teacher>findAllByText(String search);
+
+
+в сервисе:
+
+  внедряем зависимость репозитория в сервис, а также реализуем метод из сервиса:
+
+@Service
+public class TeacherService {
+
+    @Autowired
+    TeacherRepository repository;
+    public List<Teacher> search(String search) {
+       return repository.findAllByText(search);
+    }
+}
+
+в html просто доавляем новый инпут в которм вводим ключевое слово, которое ище совпадение по выбранным полям:
+
+
+<form action="/teacher/search" method="get">
+    <input type="text" name="search">
+    <button>SEARCH</button>
+</form>
+
+
+
+переписываем все методы на использование через зависимость сервиса
+
+
+return repository.findAll(Sort.by(Sort.Direction.ASC, "id")); - сортировка ASK по полю id.
+
+
+контроллер:
+
+package com.example.demo1.service;
+
+import com.example.demo1.model.Teacher;
+import com.example.demo1.repository.TeacherRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class TeacherService {
+
+    @Autowired
+    TeacherRepository repository;
+
+    public List<Teacher>search(String s){
+        return repository.findAllBySearch(s);
+    }
+
+    public Teacher getTeacher(int id){
+        return repository.findById(id).orElse(null);
+    }
+
+    public void updateTeacher(Teacher teacher){
+        repository.save(teacher);
+    }
+
+    public void addTeacher(Teacher teacher){
+        repository.save(teacher);
+    }
+
+    public Teacher searchByEmail(String email){
+        return repository.findByEmail(email);
+    }
+
+    public List<Teacher> getTeachers(){
+       return repository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+    }
+
+    public void deleteTeacher(int id){
+        repository.deleteById(id);
+    }
+}
+
+
+
+сервис:
+
+@Controller
+public class HomeController {
+
+    @Autowired
+    private TeacherService teacherService;
+
+   @GetMapping("/")
+    public String homePage(Model model){
+       var teachers = teacherService.getTeachers();
+       model.addAttribute("list", teachers);
+       return "home";
+   }
+
+   @GetMapping("/teacher/{id}")
+    public String detailsTeacher(@PathVariable int id,
+                                 Model model){
+       Teacher teacher = teacherService.getTeacher(id);
+       model.addAttribute("teacher", teacher);
+       return "teacher-details";
+
+   }
+
+    @GetMapping("/teacher/details/{email}")
+    public String detailsTeacher(@PathVariable String email,
+                                 Model model){
+        Teacher teacher = teacherService.searchByEmail(email);
+        model.addAttribute("teacher", teacher);
+        return "teacher-details";
+
+    }
+    @GetMapping("/teacher/search")
+    public String getTeachers(@RequestParam String search,
+                                 Model model){
+       var teachers = teacherService.search(search);
+       model.addAttribute("list", teachers);
+        return "home";
+
+    }
+
+   @PostMapping("/teacher/add")
+    public  String addTeacher(Teacher teacher){
+       teacherService.addTeacher(teacher);
+       return "redirect:/";
+   }
+
+   @PostMapping("/teacher/update")
+
+    public String updateTeacher(Teacher teacher){
+       teacherService.updateTeacher(teacher);
+       return "redirect:/";
+   }
+
+   @PostMapping("/teacher/delete")
+
+    public String deleteTeacher(@RequestParam int id){
+       teacherService.deleteTeacher(id);
+
+       return "redirect:/";
+   }
+}
+
+
+репозиторий:
+
+@Repository
+public interface TeacherRepository extends JpaRepository<Teacher, Integer> {
+  
+  @Query("SELECT f from Teacher f " +
+          "WHERE f.name ilike concat('%', :s, '%') " +
+          "OR f.surname ilike concat('%', :s, '%') ")
+
+  List<Teacher> findAllBySearch(String s);
+
+  Teacher findByEmail(String email);
+}
+

@@ -1,0 +1,89 @@
+Объекты и массивы
+1. Создание объекта. Можно создать объект двумя способами:
+let user = new Object();
+user.name = "Yedil";
+
+Так не делают, а  используют второй способ:
+let user = {}; - пустой объект
+let user = {
+name:"Yedil",
+surname: "Bakenov",
+}
+
+Используем ключ значение
+
+alert(user.name);
+
+даже после создания и объявление переменных объекта можно задать новый параметр:
+user.age = 23;
+
+через адер просто пишет что это объект;
+просмотреть все свойства можно через console.log(user);
+
+
+2. Массив можно создавать двумя способами:
+let arr = new Array();
+
+let arr = [];
+let arr = ["apple", "Banan", " orange]; - сразу заполнять данные
+alert(arr.length); - вывести длину
+
+arr.pop() - удаляет последний элемент
+arr.shift() - удаляет первый элемент
+arr.push("mandarin) - добавит элемент в конец
+arr.unshift() - добавляет элемент в  начало
+
+
+
+удаление по индексу в массиве:
+let array = ['a', 'b', 'c', 'd', 'e'];
+let index = 2; // Индекс элемента 'c', который мы хотим удалить
+array.splice(index, 1);
+console.log(array); // ['a', 'b', 'd', 'e']
+
+
+
+вывод через for each:
+let arr = ["a", "b", "c];
+
+for(let el of arr){
+alert(el)
+}
+
+
+
+
+
+let users = [
+
+  {id: 1, name: "A"},
+
+  {id: 2, name: "B"},
+
+  {id: 3, name: "C"}
+
+];
+
+ 
+
+let name = prompt('enter your name: ');
+
+ 
+let newUser = {}; //создаем новый объект
+
+newUser.id = users.length+1; //присваеваем объекту id
+
+newUser.name = name; //присваеваем объекту имя
+
+ 
+
+users.push(newUser); //добавляем объект в конец массива
+
+ 
+
+for(let u of users){
+
+        console.log('id: ' + u.id + ', name: ' + u.name);
+
+}
+

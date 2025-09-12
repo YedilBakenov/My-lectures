@@ -1,0 +1,324 @@
+SELECT * FROM teachers ORDER BY id ASC - сортировка по id по возрастанию, DESC - по убыванию
+
+response.sendRedirect("/details?id=" +id); возвращаемся на сервлет details по id конкретного объекта
+
+ALTER TABLE cars ADD date timestamp, date, text... - добавление нового поля в таблицу
+
+JDBC (Java Database Connectivity) - это API (Application Programming Interface)
+для взаимодействия с базами данных с использованием языка программирования Java. 
+Он предоставляет набор классов и методов, которые позволяют установить соединение
+с базой данных, выполнить SQL-запросы и получить результаты.
+
+Связки таблиц и INNER JOIN - это концепции, связанные с работой с реляционными базами данных.
+Они позволяют объединять данные из нескольких таблиц на основе определенного условия.
+
+INNER JOIN - это операция объединения таблиц, которая возвращает только те строки, 
+для которых существуют соответствующие значения в обеих таблицах, указанных в операции JOIN. 
+В результате получается новая таблица, в которой строки совмещаются на основе указанного условия объединения.
+
+
+1. Показать в гугл таблице - по id связку
+
+2. Добавим город в таблицу, jsp, сервлеты
+
+city_id int - добавить колонку в таблице cars
+добавить в Add - select city
+
+
+3. Создаем еще одну таблицу в базе city:
+CREATE TABLE cities
+
+id(primary key, autoincrement), city_name, region(делаем типа var)- заполним таблицу
+
+4. Добавляем поле в таблицу cars  - city_id
+	
+5. прописываем INNER JOIN связку таблицу:
+
+SELECT c.id, c.volume, c.brand, c.price, c.model, c.date, c.city_id, city.region, city.city_name
+FROM cars c
+INNER JOIN cities city ON c.city_id = city.id
+
+
+SELECT t.id, t.name, t.surname, t.rating, t.city_id, c.city_name, c.region
+FROM teachers t
+INNER JOIN cities c ON t.city_id = c.id;
+
+SELECT *
+FROM teachers t
+INNER JOIN cities c ON t.city_id = c.id
+INNER JOIN students s ON t.student_id = s.id
+
+Добавляем нового учителя:
+INSERT INTO teachers (name, surname, rating, city_id)
+VALUES ('Yedil', 'Yedilev', 9, 1);
+
+6. Изменить имя города, показать разницу в ответе SQL
+
+7. Создаем класс CIty(у нас будет параметр City в классе Teacher являться объектом типа City)
+
+8. В классе DBConnector создаем метод, который вытаскивает все city
+
+9. Создаем метод, который вытаскивает нам все города
+ public static ArrayList<City>getCities(){
+        ArrayList <City> cities = new ArrayList<>();
+
+        try {
+
+            PreparedStatement statement = connection.prepareStatement("" +
+                    "SELECT * FROM cities");
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()){
+                City city = new City();
+		city.setCity(resultSet.getInt("id"));	
+                city.setCity_name(resultSet.getString("city_name"));
+                city.setRegion(resultSet.getString("region"));
+                cities.add(city);
+            }
+
+            statement.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+        return cities;
+   }
+
+
+11. В Add сервлете отправляем также список городов:
+        request.setAttribute("cities", DBConnection.getCities());
+
+
+12. Добавляем в jsp addPage, index возможность добавления города:
+<select class="form-select" name="city">
+                        <% ArrayList<City> cities = (ArrayList<City>) request.getAttribute("cities"); %>
+                        <% for (City c : cities) { %>
+                            <option value="<%=c.getId()%>"><%=c.getRegion()%> / <%=c.getCity_name()%></option>
+                       <% }%>
+</select>
+
+14. Меняем структуру класса Car:
+создаем параметр из объекта класса City
+
+
+15. Меняем структуры всех методов и сервлетов:
+
+ public static ArrayList<Car> getCars() {
+        ArrayList<Car> cars = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT c.id, c.volume, c.brand, c.price, c.model, c.date, c.city_id, city.region, city.city_name " +
+                    "FROM cars c " +
+                    "INNER JOIN cities city ON c.city_id = city.id ORDER BY id ASC ");
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Car car = new Car();
+                car.setId(resultSet.getInt("id"));
+                car.setPrice(resultSet.getInt("price"));
+                car.setVolume(resultSet.getDouble("volume"));
+                car.setModel(resultSet.getString("model"));
+                car.setBrand(resultSet.getString("brand"));
+                car.setDate(resultSet.getDate("date"));
+
+                City city = new City();
+                city.setId(resultSet.getInt("city_id"));
+                city.setRegion(resultSet.getString("region"));
+                city.setCity_name(resultSet.getString("city_name"));
+                car.setCity(city);
+
+                cars.add(car);
+            }
+
+            statement.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return cars;
+    }
+
+16. в main.jsp меняем, потому что мы уже тянем объект:
+
+       <td><%=el.getCity().getCity_name() + " / " + el.getCity().getRegion()%></td>
+
+17. показать на примере как поменять город в базе и он везде меняется
+
+18. создаем метод который вытаскивает город по id: нужен потом для добавления car
+
+ public static City getCity(int id) {
+        City city = null;
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM cities WHERE id = ?");
+            statement.setInt(1, id);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                city = new City();
+                city.setId(resultSet.getInt("id"));
+                city.setCity_name(resultSet.getString("city_name"));
+                city.setRegion(resultSet.getString("region"));
+
+            }
+                statement.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return city;
+    }
+
+19.1 на станице добавления машины add-page добавляем возможность выбора города:
+
+	<div class="mt-2">
+                    <select class="form-select" name="city">
+                        <% ArrayList<City> cities = (ArrayList<City>) request.getAttribute("cities"); %>
+                        <% for (City c : cities) { %>
+                            <option value="<%=c.getId()%>"><%=c.getCity_name()%></option>
+                       <% }%>
+                    </select>
+                </div>	
+
+19.2 на сервлете addCar изменяем:
+  @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String name = request.getParameter("teacherName");
+        String surname = request.getParameter("teacherSurname");
+        int rating = Integer.parseInt(request.getParameter("teacherRating"));
+        int cityId = Integer.parseInt(request.getParameter("teacherCity"));
+
+        City city = DBConnector.getCity(cityId);
+        if (city != null) {
+
+            Teacher teacher = new Teacher();
+            teacher.setName(name);
+            teacher.setSurname(surname);
+            teacher.setRating(rating);
+            teacher.setCity(city);
+            DBConnector.addTeacher(teacher);
+            
+        }
+
+        response.sendRedirect("/");
+    }
+
+20. меняем метод addTeacher:
+ public static void addTeacher(Teacher teacher) {
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO teachers " +
+                    "(name, surname, rating, city_id) VALUES (?, ?, ?, ?)");
+
+            statement.setString(1, teacher.getName());
+            statement.setString(2, teacher.getSurname());
+            statement.setInt(3, teacher.getRating());
+            statement.setInt(4, teacher.getCity().getId());
+
+            statement.executeUpdate();
+            statement.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+21. показать код страницы value city
+
+22. меняем метод getTeacher:
+ public static Teacher getTeacher(int id) {
+        Teacher teacher = new Teacher();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT t.id, t.name, t.surname, t.rating, " +
+                    "t.city_id, c.city_name, c.region " +
+                    "FROM teachers t " +
+                    "INNER JOIN cities c ON t.city_id = c.id " +
+                    "WHERE t.id = ?");
+
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                teacher.setId(resultSet.getInt("id"));
+                teacher.setName(resultSet.getString("name"));
+                teacher.setSurname(resultSet.getString("surname"));
+                teacher.setRating(resultSet.getInt("rating"));
+
+                City city = new City();
+                city.setId(resultSet.getInt("city_id"));
+                city.setCity_name(resultSet.getString("city_name"));
+                city.setRegion(resultSet.getString("region"));
+
+                teacher.setCity(city);
+            }
+            statement.close();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return teacher;
+    }
+
+23. меняем editTeacherServlet:
+@Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+
+        Teacher teacher = DBConnector.getTeacher(id);
+
+        String name = request.getParameter("teacherName");
+        String surname = request.getParameter("teacherSurname");
+        int cityId = Integer.parseInt(request.getParameter("teacherCity"));
+        int rating = Integer.parseInt(request.getParameter("teacherRating"));
+
+        City city = DBConnector.getCity(cityId);
+
+        if(teacher!=null && city!=null){
+            teacher.setName(name);
+            teacher.setSurname(surname);
+            teacher.setRating(rating);
+            teacher.setCity(city);
+            DBConnector.updateTeacher(teacher);
+            response.sendRedirect("/details?teacher_id=" +id);
+        }
+        else response.sendRedirect("/");
+
+    }
+
+24. меняем update метод:
+   public static void updateTeacher(Teacher teacher) {
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("UPDATE teachers SET name = ?, " +
+                    "surname = ?, rating = ?, city_id = ? WHERE id = ?");
+
+            statement.setString(1, teacher.getName());
+            statement.setString(2, teacher.getSurname());
+            statement.setInt(3, teacher.getRating());
+            statement.setInt(4, teacher.getCity().getId());
+            statement.setInt(5, teacher.getId());
+
+            statement.executeUpdate();
+            statement.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+25.создадим jsp страничку city, сервлет:
+
+26.создаем add-city сервлет
+
+27.foreign key(запрет на удаление):
+правой кнопкой мыши на cars -> modify TABLE -> columns -> правой кнопокой мыши -> city_id ->  new -> Foreing KEY -> Target table cities -> references id

@@ -1,0 +1,161 @@
+Миграции в контексте разработки программного обеспечения — это управляемые и версионированные изменения, применяемые к структуре базы данных.
+Этот процесс позволяет разработчикам, командам и системам последовательно обновлять схему базы данных, добавлять новые функции или корректировать 
+существующие без потери данных или нарушения работы приложения. Миграции обеспечивают безопасный способ применения изменений в базу данных,
+позволяя отслеживать, кто, когда и какие изменения внес, а также предоставляя возможность отката изменений при необходимости.
+
+
+Ключевые аспекты миграций
+Версионирование: Каждая миграция имеет уникальный идентификатор или номер версии. Это позволяет системе определять, какие миграции были применены к базе данных и в каком порядке.
+
+Отслеживание изменений: Миграции позволяют отслеживать историю изменений структуры базы данных, что облегчает анализ и отладку проблем.
+
+Автоматизация: Процесс миграции может быть полностью автоматизирован, что значительно упрощает развертывание изменений в различных средах (разработка, тестирование, продакшн).
+
+Откат изменений: В случае возникновения проблем после применения миграции, система может откатить изменения до предыдущего стабильного состояния.
+
+Совместная работа: Миграции упрощают совместную работу в командах, поскольку каждый член команды может применять одни и те же изменения к своей локальной копии базы данных.
+
+
+Liquibase — это инструмент для управления версиями баз данных, который позволяет отслеживать, версионировать и применять изменения в структуре базы данных в автоматическом режиме. 
+Основное предназначение Liquibase — работа с реляционными базами данных.
+
+
+Практика:
+
+1. Подятигиваем библиотеку Liquibase из start spring io:
+implementation 'org.liquibase:liquibase-core'
+
+2. Запускаем проект - ловим ошибку:
+Liquibase failed to start because no changelog could be found at 'classpath:/db/changelog/db.changelog-master.yaml'.
+
+
+
+3. Добавляем в application.properties:
+spring.liquibase.change-log=classpath:/db/changelog/db.changelog-master.xml
+
+spring.jpa.hibernate.ddl-auto=none
+
+
+
+4. Создаем папки по данному пути -> db/changelog/db.changelog-master.xml
+
+папка db в ней папка changelog в ней папка changes
+
+5. В данном файле описываем как строится база внутри файла xml в папке changelog
+
+db -> changelog -> new file -> db.changelog-master.xml
+
+
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="2023_03_10_create_init_tables" author="yedil.bakenov">
+        <sqlFile
+                dbms="postgresql"
+                encoding="UTF-8"
+                endDelimiter=";"
+                path="db/changelog/changes/2023_03_10_create_init_tables.sql"
+                relativeToChangelogFile="false"
+                stripComments="true"
+                splitStatements="true"
+        />
+    </changeSet>
+
+    <changeSet id="2023_03_10_insert_init_date.sql" author="yedil.bakenov">
+        <sqlFile
+                dbms="postgresql"
+                encoding="UTF-8"
+                endDelimiter=";"
+                path="db/changelog/changes/2023_03_10_insert_init_date.sql"
+                relativeToChangelogFile="false"
+                stripComments="true"
+                splitStatements="true"
+        />
+    </changeSet>
+
+
+</databaseChangeLog>
+
+
+
+
+
+6. Создаем первый файл SQL в папке changes в котором создаем все необходимые таблицы:
+
+2023_03_10_create_init_tables.sql
+
+меняем диалект на postgresql
+
+CREATE TABLE permission(
+    id SERIAL PRIMARY KEY,
+    role varchar(255)
+);
+
+CREATE TABLE users(
+    id SERIAL PRIMARY KEY,
+    email varchar(255),
+    fullname varchar(255),
+    password varchar(255)
+);
+
+CREATE TABLE users_permissions(
+    user_id int,
+    permissions_id int
+);
+
+CREATE TABLE items(
+    id SERIAL PRIMARY KEY,
+    created_at timestamp(6),
+    updated_at timestamp(6),
+    description text,
+    mark varchar(255),
+    name varchar(255),
+    point int,
+    price int
+);
+
+ALTER TABLE users_permissions
+    ADD CONSTRAINT fk_users_permissions_users
+        FOREIGN KEY (user_id)
+            REFERENCES users (id)
+            ON UPDATE CASCADE;
+
+ALTER TABLE users_permissions
+    ADD CONSTRAINT fk_users_permissions_permission
+        FOREIGN KEY (permissions_id)
+            REFERENCES permission (id)
+            ON DELETE CASCADE;
+
+
+7. Создаем новый sql файл в котором добавляем данные в таблицу
+
+2023_03_10_insert_init_date.sql
+
+
+INSERT INTO permission(role)
+VALUES ('ROLE_USER'),
+       ('ROLE_STUDENT'),
+       ('ROLE_ADMIN');
+
+INSERT INTO users (email, fullname, password)
+VALUES ('xxx@mail.ru', 'Marat Maratov', '$2a$12$3U4bSE9P/HiFArqoERDOdu2H0ZekXAHhJ/ER0dMYGBX4j8FgEVpVO'),
+       ('serik@mail.ru', 'Serik Serikov', '$2a$12$clldki9Qxcu9OdBZAhmfm.l2WRJmhY7Pr83SjaGzcdba/DgQPdsz24'),
+       ('mikhail.lipkovich@gmail.com', 'Mikhail Mikhailov',
+        '$2a$10$CwOPRDtb7DJtikqDkOdjseoJvmI7rdizopK.3Y0FHFtsBlDb2Tbh2'),
+       ('yedil.bakenov@gmail.com', 'Yedil Bakenov', '$2a$10$T40bY5V4.1DM2fuD2Q4qu.5rXxCoiQULuVqrFlWcsFHJ9I1FZdsfy');
+
+INSERT INTO items(created_at, updated_at, description, mark, name, point, price)
+VALUES ('2024-03-06 00:19:29.973166', '2024-03-06 00:20:21.390785', 'Iphone 8+',
+        'BAD', 'Iphone', 1, 100000);
+
+INSERT INTO users_permissions(user_id, permissions_id)
+VALUES (1, 1),
+       (1, 2),
+       (2, 1),
+       (2, 2),
+       (2, 3);
+
+
+8. показать, как клониров проект с гилаба, сохраняются все данные

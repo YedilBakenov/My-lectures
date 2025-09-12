@@ -1,0 +1,132 @@
+Flyway и Liquibase — это две популярные системы управления версиями баз данных, 
+которые помогают командам разработки управлять изменениями в схеме базы данных и миграциями.
+Обе системы предоставляют возможность версионировать базу данных, автоматизировать процесс
+применения миграций и поддерживать согласованность схемы базы данных между различными средами разработки, тестирования и производства.
+
+Основные характеристики:
+
+Версионирование миграций: Flyway управляет версиями миграций с помощью префикса, версии, разделителя и суффикса 
+в названии файла миграции. Пример: V240313190945__Initial_schema.sql.
+Поддержка SQL и Java: Миграции могут быть написаны как в чистом SQL, так и на Java для более сложной логики.
+Простота использования: Flyway легко интегрируется с большинством современных фреймворков и платформ,
+таких как Spring Boot, и его можно использовать с минимальной настройкой.
+
+
+Практика:
+
+1. Добавляем библиотеку flyway из start.spring.io
+
+2. Подключаемся в application.properties:
+
+spring.datasource.username=postgres
+spring.datasource.password=postgres
+spring.datasource.url=jdbc:postgresql://localhost:5432/postgres?currentSchema=testsecur
+spring.jpa.show-sql=true
+
+spring.flyway.url=jdbc:postgresql://localhost:5432/postgres?currentSchema=sec2
+spring.flyway.user=postgres
+spring.flyway.password=postgres
+spring.flyway.locations=classpath:db/changelog
+
+
+обязательно указываем в зависимостях в build.gradle:
+
+implementation 'org.flywaydb:flyway-core'
+implementation 'org.flywaydb:flyway-database-postgresql:10.0.0'
+
+удаляем или указываем none, гды был update
+
+3. Создаем папки в resources:
+
+db -> changelog -> new file
+
+
+файл V240313004556__create_init_tables.sql
+
+
+4. Заполняем первый файл:
+
+CREATE TABLE permission(
+    id SERIAL PRIMARY KEY,
+    role varchar(255)
+);
+
+CREATE TABLE users(
+    id SERIAL PRIMARY KEY,
+    email varchar(255),
+    fullname varchar(255),
+    password varchar(255)
+);
+
+CREATE TABLE users_permissions(
+    user_id int,
+    permissions_id int
+);
+
+CREATE TABLE items(
+    id SERIAL PRIMARY KEY,
+    created_at timestamp(6),
+    updated_at timestamp(6),
+    description text,
+    mark varchar(255),
+    name varchar(255),
+    point int,
+    price int
+);
+
+ALTER TABLE users_permissions
+    ADD CONSTRAINT fk_users_permissions_users
+        FOREIGN KEY (user_id)
+            REFERENCES users (id)
+            ON UPDATE CASCADE;
+
+ALTER TABLE users_permissions
+    ADD CONSTRAINT fk_users_permissions_permission
+        FOREIGN KEY (permissions_id)
+            REFERENCES permission (id)
+            ON DELETE CASCADE;
+
+6. Создаем новый sql файл в котором добавляем данные в таблицу
+
+2023_03_10_insert_init_date.sql
+
+
+INSERT INTO permission(role)
+VALUES ('ROLE_USER'),
+       ('ROLE_STUDENT'),
+       ('ROLE_ADMIN');
+
+INSERT INTO users (email, fullname, password)
+VALUES ('xxx@mail.ru', 'Marat Maratov', '$2a$12$3U4bSE9P/HiFArqoERDOdu2H0ZekXAHhJ/ER0dMYGBX4j8FgEVpVO'),
+       ('serik@mail.ru', 'Serik Serikov', '$2a$12$clldki9Qxcu9OdBZAhmfm.l2WRJmhY7Pr83SjaGzcdba/DgQPdsz24'),
+       ('mikhail.lipkovich@gmail.com', 'Mikhail Mikhailov',
+        '$2a$10$CwOPRDtb7DJtikqDkOdjseoJvmI7rdizopK.3Y0FHFtsBlDb2Tbh2'),
+       ('yedil.bakenov@gmail.com', 'Yedil Bakenov', '$2a$10$T40bY5V4.1DM2fuD2Q4qu.5rXxCoiQULuVqrFlWcsFHJ9I1FZdsfy');
+
+INSERT INTO items(created_at, updated_at, description, mark, name, point, price)
+VALUES ('2024-03-06 00:19:29.973166', '2024-03-06 00:20:21.390785', 'Iphone 8+',
+        'BAD', 'Iphone', 1, 100000);
+
+INSERT INTO users_permissions(user_id, permissions_id)
+VALUES (1, 1),
+       (1, 2),
+       (2, 1),
+       (2, 2),
+       (2, 3);
+
+7. 2023_03_10_rename_column_fullname.sql
+
+ALTER table users RENAME fullname TO full_name
+
+меняем также у сущности
+
+8. Добавляем параметр в user:
+
+new -> V240313015815__add_column_to_users_table.sql
+
+ALTER table users ADD COLUMN bio TEXT
+
+
+также добавляем в сущности
+
+9.

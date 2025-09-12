@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p>
+    HELLO WORLD!
+</p>
+<h1>HELLO WORLD!</h1>
+<h2>HELLO WORLD!</h2>
+<h3>HELLO WORLD!</h3>
+<h4>HELLO WORLD!</h4>
+<h5>HELLO WORLD!</h5>
+<h6>HELLO WORLD!</h6>
+<a href="http://flibusta.site/b/625390">LINK TO</a> <br><br>
+<input type="text"><br>
+<input type="password"><br>
+<input type="date"><br>
+<input type="number" step="10" max="100" min="-100" value="0"><br>
+<input type="radio" name="gender"> Man
+<input type="radio" name="gender"> Women <br>
+<input type="checkbox"> Химия <br>
+<input type="checkbox"> Русский <br>
+<input type="checkbox"> Математика <br>
+<input type="checkbox"> Физика <br>
+<textarea rows="10" cols="50">asdasdasd</textarea> <br>
+<select>
+    <option >1</option>
+    <option>2</option>
+    <option >3</option>
+    <option selected>4</option>
+    <option>5</option>
+</select>
+
+<table cellpadding="20px" border="1px">
+     <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                NAME
+            </th>
+            <th>
+                SURNAME
+            </th>
+            <th>
+                GPA
+            </th>
+        </tr>
+     </thead>
+    <tbody>
+        <tr>
+            <td>
+                1
+            </td>
+            <td>
+               YEDIL
+            </td>
+            <td>
+                BAKENOV
+            </td>
+            <td>
+                9.0
+            </td>
+        </tr>
+        <tr>
+            <td>
+                2
+            </td>
+            <td>
+                YEDIL
+            </td>
+            <td>
+                BAKENOV
+            </td>
+            <td>
+                9.0
+            </td>
+        </tr>
+        <tr>
+            <td>
+                3
+            </td>
+            <td>
+                YEDIL
+            </td>
+            <td>
+                BAKENOV
+            </td>
+            <td>
+                9.0
+            </td>
+        </tr>
+    </tbody>
+</table>
+  <img src="1.jpg" style="width: 100px"> <br>
+<a href="http://flibusta.site/b/625390"><img src="1.jpg" style="width: 100px"></a>
+</body>
+</html>

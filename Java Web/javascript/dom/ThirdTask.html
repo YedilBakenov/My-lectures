@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .text{
+            width: 50px;
+         margin-right: 10px;
+            height: 15px;
+        }
+    </style>
+</head>
+<body>
+<form id="myform">
+    <div style="display: flex; " >
+        CARD : <input type="text" name="login1" class="text" style="margin-left: 100px; margin-bottom: 50px">
+        <input type="text" name="login2" class="text">
+        <input type="text" name="login3" class="text">
+        <input type="text" name="login4" class="text">
+    </div>
+    <div>
+        NAME SURNAME: <input type="text" name="login5" style="margin-left: 16px; margin-bottom: 50px">
+    </div>
+    <div>
+        CVV: <input type="password" name="password" style="margin-left:110px; width: 50px; margin-bottom: 50px">
+    </div>
+    <button type="button" onclick="checkUser()" style="width: 50px; background-color: darkblue; color: white">Input</button>
+</form>
+
+<script>
+    let logfield1 = myform.elements.login1
+    let logfield2 = myform.elements.login2
+    let logfield3 = myform.elements.login3
+    let logfield4 = myform.elements.login4
+    let name = myform.elements.login5
+    let logfield6 = myform.elements.password
+
+    function checkUser() {
+        if (logfield1.value == '4413' && logfield2.value == '4341' && logfield3.value == '3534' && logfield4.value == '2424' && name.value == 'yedil bakenov' && logfield6.value == '273')
+            alert("Transaction completed")
+        else alert("Invalid Data")
+    }
+</script>
+</body>
+</html>

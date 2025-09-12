@@ -1,0 +1,175 @@
+Любой пользователь может оставлять комментарии
+
+1.добавляем в details-newss.jsp форму, куда прописываем textarea, где добавляем возможность 
+добавлять комментарии.
+Обязательно в форме отправляем id новости:
+<input type="hidden" value="<%=n.getId()%>" name="id">
+
+2.создаем таблицу comments:
+ id primary key,
+ user_id   int,
+ news_id   int,
+ comment   text,
+ post_date timestamp
+
+3.создаем форейн кей для user_id to user id
+
+4.
+создаем форейн кей news_id news (id)
+создаем форейн кей users_id news (id)
+
+
+5.создаем сущность (модель) коммента:
+ private int id;
+    private User user;
+    private News news;
+    private String comment;
+    private Timestamp postDate;
+
+6.создаем CommentServlet
+также идет проверка на в сессии находится User или нет:
+User user =(User)request.getSession().getAttribute("currentUser");
+
+if(user!=null){
+  String commentText = request.getParametr("comment");
+  int id = request.getParametr("id");
+	
+  News news = DBConnection.getNewsById(id);
+  Comment comment = new Comment;
+  comment.setNews(news);
+  comment.setUser(user);
+  comment.setComment(commentText);	
+  	
+
+ responce.sendRedirect("/news-deatils?id=" + id)	 
+
+7.создаем метод addComment в DBConnector
+	
+  public static void addComment(Comment comment){
+
+        try{
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO comments " +
+                    "(comment, user_id, news_id, post_date) " +
+                    "VALUES (?,?,?,NOW())");
+
+            statement.setString(1, comment.getComment());
+            statement.setInt(2, comment.getUser().getId());
+            statement.setInt(3, comment.getNews().getId());
+
+            statement.executeUpdate();
+            statement.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+8.создаем видимость добавления коммента только для юсеров в newsdetails.jsp:
+	
+if(currentUser!=null){
+  внутри форма добавления новости
+}
+
+
+8.1. там же добавляем listgroup из бутстраппа:
+
+
+
+9.создаем метод getComments в DBConnector по newsId:
+
+ public static ArrayList<Comment>getComments(int newsId){
+        ArrayList<Comment>comments = new ArrayList<>();
+
+        try{
+            PreparedStatement statement = connection.prepareStatement("SELECT co.id, co.comment, co.post_date, " +
+                    "co.news_id, co.user_id, u.full_name " +
+                    "FROM comments co " +
+                    "INNER JOIN users u ON u.id = co.user_id WHERE co.news_id = ? " +
+                    "ORDER BY co.post_date DESC");
+
+            statement.setInt(1, newsId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()){
+                Comment comment = new Comment();
+                comment.setId(resultSet.getInt("id"));
+                comment.setComment(resultSet.getString("comment"));
+                comment.setPostDate(resultSet.getTimestamp("post_date"));
+
+                User user = new User();
+                user.setId(resultSet.getInt("user_id"));
+                user.setFull_name(resultSet.getString("full_name"));
+                comment.setUser(user);
+
+                News news = new News();
+                news.setId(resultSet.getInt("news_id"));
+                comment.setNews(news);
+
+                comments.add(comment);
+            }
+
+            statement.close();
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return comments;
+    }
+
+10.В сервлет NewsDetailsServlet добавляем список комментов на отправку на jsp:
+
+ if (news != null) {
+            ArrayList<Comment> comments = DBConnector.getComments(news.getId());
+            request.setAttribute("comments", comments);
+            request.getRequestDispatcher("/newsdetails.jsp").forward(request, response);
+        }
+        else response.sendRedirect("/login");
+
+11.В newsDetails.jsp достаем все комменты, которые отправили в NewsDetailsServlet 
+
+<div class="row">
+                <div class="col-12">
+                    <%
+                        ArrayList<Comment> comments = (ArrayList<Comment>) request.getAttribute("comments");
+                        if (comments != null) {
+                            for (Comment comment : comments) {
+                    %>
+                    <div class="list-group">
+                        <a href="JavaScript:void(0)" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1"><%=comment.getUser().getFull_name()%></h5>
+                                <small class="text-body-secondary"><%=comment.getPostDate()%></small>
+                            </div>
+                            <p class="mb-1"><%=comment.getComment()%></p>
+
+                            <%
+                                if(currentUser!= null && comment != null && news != null && (currentUser.getRole() == 1 || comment.getUser().getId() == currentUser.getId())) {
+                            %>
+                            <form action="/delete-comment" method="post">
+                                <input type="hidden" name="commentId" value="<%=comment.getId()%>">
+                                <input type="hidden" name="newsId" value="<%=news.getId()%>">
+                                <p class="mb-1">
+                                <button class="btn btn-danger btn-sm">DELETE</button>
+                            </p>
+                            </form>
+                            <%
+                                }
+                            %>
+                        </a>
+                    </div>
+
+                    <%
+                            }
+                        }
+                    %>
+                </div>
+            </div>
+            <%
+                }
+            %>
+        </div>
+
+

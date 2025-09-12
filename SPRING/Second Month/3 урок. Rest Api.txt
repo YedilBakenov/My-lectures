@@ -1,0 +1,283 @@
+API (Application Programming Interface) — это набор правил и механизмов,
+которые позволяют различным программным приложениям взаимодействовать друг с другом. 
+
+В контексте веб-разработки, REST (Representational State Transfer) API является одним из наиболее популярных способов
+обмена данными между клиентами и серверами.
+
+REST API в контексте Spring Framework — это способ построения веб-сервисов, которые позволяют различным клиентам 
+(будь то веб-браузеры, мобильные приложения или другие сервера) взаимодействовать с вашим приложением через HTTP запросы. 
+
+Spring Boot для каждой сущности создается отдельный контроллер, чтобы соблюдать принципы RESTful API и обеспечить четкую организацию кода. 
+Это упрощает управление кодом, поскольку каждый контроллер отвечает за определенный набор операций CRUD для одной сущности.
+
+
+API может включать следующие HTTP методы:
+
+
+GET для получения информации.
+POST для создания нового ресурса
+PUT или PATCH для обновления информации о существующем ресурсе
+DELETE для удаления информации о объекте.
+OPTIONS получение информации о доступных методах для конкретного ресурса.
+HEAD для запроса заголовков, которые сервер отправил бы в ответ на запрос GET, но без тела ответа. 
+
+
+Отличия @Controller и @RestController
+
+@Controller - возвращает представление (например, страницу HTML). 
+@RestController - возвращающает данные в формате JSON
+
+
+
+JSON формат:
+JSON (JavaScript Object Notation) — это легкий формат обмена данными, 
+который легко читается и пишется как для людей, так и для машин. Это текстовый формат,
+который полностью независим от языка, но использует соглашения, знакомые программистам,
+работающим с семейством языков C, включая C, C++, C#, Java, JavaScript, Perl, Python и многие другие.
+JSON широко используется в веб-разработке для передачи данных между клиентом и сервером.
+Это делает JSON идеальным языком обмена данными.
+
+JSON основан на двух структурах:
+
+Коллекция пар ключ/значение (часто называемая объектом в других языках).
+Упорядоченный список значений (часто называемый массивом в других языках).
+
+
+Пример JSON, который представляет коллекцию пар ключ/значение, часто называемую объектом:
+В этом примере у нас есть объект с ключами "name", "age", "isStudent" и "address", где "address"
+сам является вложенным объектом с собственными ключами и значениями.
+Для массивов, порядок значений важен.
+Для объектов, порядок пар ключ/значение не важен.
+{
+  "name": "Иван",
+  "age": 30,
+  "isStudent": false,
+  "address": {
+    "city": "Москва",
+    "street": "Ленинская",
+    "building": "12"
+  }
+}
+
+
+упорядоченный список значений, который называется массивом:
+[
+  "яблоко",
+  "банан",
+  "киви",
+  "манго"
+]
+
+
+
+Практика:
+
+
+Аннотация @RestController: Указывает, что этот класс является контроллером, 
+который обрабатывает HTTP-запросы и возвращает данные в формате JSON.
+
+Аннотация @RequestMapping("/users"): Указывает базовый URL для всех методов внутри этого контроллера.
+
+Когда клиент отправляет запросы к этому RestController, сервер отвечает данными в формате JSON
+
+
+1. Создаем модели
+
+Создаем базовую сущность:
+
+@MappedSuperclass
+@Data
+public class BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+}
+
+
+2. Создаем сущность Item
+
+@Entity
+@Table(name = "ITEMS")
+@Data
+public class Item extends BaseEntity{
+
+    @Column(name = "NAME")
+    private String name;
+
+    @Column(name = "DESCRIPTION", columnDefinition = "TEXT")
+    private String description;
+
+    @Column(name = "PRICE")
+    private int price;
+
+    @Column(name = "POINT")
+    private int point;
+
+    @Column(name = "MARK")
+    private String mark;
+}
+
+
+3. Создаем репозиторий для новой сущности:
+
+@Repository
+@Transactional
+public interface ItemRepository extends JpaRepository<Item, Integer> {
+    
+}
+
+
+4. Создаем сервис для Item и сразу бодавляем метод на получения всех items
+
+@Service
+@RequiredArgsConstructor
+public class ItemService {
+
+    private final ItemRepository itemRepository;
+    public List<Item> getItems() {
+        return itemRepository.findAll();
+    }
+}
+
+
+5. Добавляем вручную в базу айтемы
+
+
+5. Создаем новый RestController:
+
+@RequestMapping применяется на уровне класса, она указывает базовый URI, который будет общим для всех методов обработки 
+запросов в этом контроллере. Например, @RequestMapping("/items") указывает, 
+что все методы в этом контроллере будут обрабатывать запросы, URI которых начинается с /items.
+
+
+@RestController
+@RequestMapping("/items")
+@RequiredArgsConstructor
+public class ItemController {
+    private final ItemService itemService;
+
+    @GetMapping(value = "/all-items")
+    public List<Item> getItems(){
+       return itemService.getItems();
+    }
+
+}
+
+
+6. Скачиваем программу Postman https://www.postman.com/downloads/
+
+ workspaces -> new Workspaces
+
+Blank Collections -> new Request
+
+
+7. Отправляем первые запросы:
+
+1.http://localhost:8080/items   - метод get
+
+
+8. Создаем запрос на добавление item в контроллере:
+
+    @PostMapping(value ="/add-item" )
+    public Item addItem(@RequestBody Item item){
+        return itemService.createItem(item);
+    }
+
+
+Создаем в сервисе метод на добавление Item:
+
+ public Item createItem(Item item) {
+        String mark = calculateMark(item.getPoint());
+        item.setMark(mark);
+        return itemRepository.save(item);
+    }
+    private String calculateMark(Integer point) {
+        if (point == null) {
+            return null;
+        }
+        switch (point) {
+            case 1:
+            case 2:
+                return "BAD";
+            case 3:
+                return "NOT_BAD";
+            case 4:
+                return "GOOD";
+            case 5:
+                return "GREAT";
+            default:
+                return null;
+        }
+    }
+
+9. тестируем в постмане
+
+создаю новый запрос -> body -> формат Json -> raw -> 
+
+{
+    "name": "Xiaomi",
+    "description": "Xiaomi",
+    "price": 100000,
+    "point": 5,
+    "mark": "GREAT"
+}
+
+10.  создаем запрос на изменение item
+
+
+    @PutMapping(value = "/update-item")
+    public Item editItem(@RequestBody Item item){
+        return itemService.updateItem(item);
+    }
+
+
+ public Item updateItem(Item item) {
+        if (item == null) {
+            return null;
+        }
+
+        Item item1 = getItemById(item.getId());
+
+        String mark = calculateMark(item.getPoint());
+        item1.setMark(mark);
+        item1.setName(item.getName());
+
+        return itemRepository.save(item1);
+    }
+
+
+11. запрос на нахождение по id
+
+     @GetMapping(value = "/{id}")
+    public Item getItem(@PathVariable int id){
+        return itemService.getItemById(id);
+    }
+
+	postman -> http://localhost:8080/items/3
+
+
+12. запрос на удаление по id
+@DeleteMapping(value = "/{id}")
+    public void deleteItem(@PathVariable int id){
+        itemService.deleteItem(id);
+    }
+
+public void deleteItem(int id) {
+        itemRepository.deleteById(id);
+    }
+
+

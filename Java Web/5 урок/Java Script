@@ -1,0 +1,149 @@
+Java Script
+JavaScript - это высокоуровневый язык программирования, который часто используется для создания динамических веб-страниц.
+JavaScript может быть использован как самостоятельный язык программирования, так и в сочетании с другими технологиями,
+такими как HTML и CSS, для создания полнофункциональных веб-приложений.
+Был изначально придуман для выполнения анимации на странице, даллее уже стал полноценным языком и теперь даже может выполняться на сервере.
+
+Выполняется не компилируясь, выполняется сразу на браузере.
+
+Выполняется внутри боди:
+
+<body>
+	<script>
+		
+	</script>
+</body>
+
+Можно также прописать код на JS в отдельном файле с расширением js.
+И подключить его <script src="название файла"></script>
+
+Данный язык не строго типизированный!
+
+Функции и переменные:
+1. alert("HELLO WORLD!"); - выводит сообщение в сплывающем окне
+Также можно выполнять математические операции внутри alert:
+alert(60/15);
+alert(3/0) - Infinitу, т.е. бесконечность
+alert("aaa" + 3); - будет просто сложение как в java - конкотенация
+alert("aaa" / 3); - NaN - что значит not a number
+	
+2. JavaScript не строго типизированный язык программирования. Переменные объявляются одинаково. Вместо любого типа пишем let. Например:
+let x = 15;
+let c = "HELLO BITLAB"
+alert(x);
+alert(c);
+
+Можно писать как в одинарных кавычках так и в двойных.
+
+типы данных:
+number
+String
+boolean
+Object
+
+3. const; 
+const pi = 3,14
+pi = 50; - будет ошибка
+
+нельзя константу менять. Можно посмотреть в коде старнице, в консоли.
+
+4. typeof - показывает какого типа переменная
+ let x = 3.4;
+ alert(typeof x);
+ alert(typeof "sads");
+ alert(typeof 43);
+
+6. console.log()
+выводит сообщения в консоли:
+let a = 5;
+console.log(a);
+
+7. boolean
+let b = 4<5;
+console.log(b);
+console.log(typeof b);
+
+charAt();
+slice();
+toUpperCase();
+toLowerCase();
+
+8. функция prompt("Please enter:")
+позволяет вводить значения
+
+let age = prompt("Enter your age: ");
+alert(age);
+alert(typeof age);
+когда мы вводим значения через консоль, всегда будет тип String.
+
+
+9. confirm
+возвращает только тип boolean
+
+let check = confirm("Are you good student?");
+alert(check);
+
+
+10. Операторы
+умножение, деление, вычитание...
+ 
+сравнение:
+Оператор == (нестрогое равенство)
+Проверяет равенство значений после приведения их типов к одному.
+Выполняет преобразование типов, если это необходимо.
+
+Оператор === (строгое равенство)
+Проверяет равенство значений и типов.
+Не выполняет преобразование типов.
+
+console.log(1 == '1'); // true
+console.log(true == 1); // true
+console.log(null == undefined); // true
+
+
+console.log(1 === '1'); // false
+console.log(true === 1); // false
+console.log(null === undefined); // false
+
+
+11. Условия if, while
+
+let age = prompt("Are you under 18?");
+
+if(age> 18){
+	alert("YES");
+}
+else alert("NO");
+
+let day = prompt("enter day");
+
+if(day==1) alert("Monday");
+if(day==3) alert("Wednesday");
+
+также можно использовать || &&
+
+12. вызов функции
+
+function getInfo() {
+	alert("HELLO MISTER");
+}
+
+getInfo();
+
+function getInfo(a, b) {
+alert("HELLO " + a + " and "+  b);
+}
+
+getInfo(prompt(), prompt());
+
+
+13.  parseInt
+
+let a = parseInt(prompt());
+let b = parseInt(prompt());
+
+alert(a+b);
+
+
+14.Создание объекта
+let myCar = new Object();

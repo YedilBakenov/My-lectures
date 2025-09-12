@@ -1,0 +1,60 @@
+1.    @PostMapping(value = "/admin")
+    public String adminPage(){
+        return "admin";
+    } - измениь на гетмапинг
+
+2.  @GetMapping(value = "/forbidden") - убрать лишнюю проверку на пользователей
+    
+
+3.  на страничке forbidden добавить -  xmlns:sec ="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+
+ <a sec:authorize="hasAnyRole('ROLE_ADMIN')" href="/admin">ADMIN PAGE</a> - добавляем вместо формы для отправки
+
+4. private final PasswordEncoder passwordEncoder; - можно добавить зависимость на сервис
+
+5. Добавляем способ изменения пароля у User на index прописываем:
+
+ <form action="/change-password" method="post">
+        <input type="password" name="currentPassword">
+        <input type="password" name="newPassword">
+        <input type="password" name="reNewPassword">
+        <button >CHANGE PASSWORD</button>
+    </form>
+
+6. На сервисе прописываем:
+
+
+    public String changePassword(String currentPassword, String newPassword, String reNewPassword) {
+        if(!passwordEncoder.matches(currentPassword, getCurrentUser().getPassword())){
+            return "errorCurrentPassword";
+        }
+
+        if(!newPassword.equals(reNewPassword)){
+            return "errorNewPassword";
+        }
+
+        getCurrentUser().setPassword(passwordEncoder.encode(newPassword));
+
+        userRepository.save(getCurrentUser());
+
+        return "success";
+    }
+
+7. на контроллере прописываем:
+
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping(value = "/change-password")
+    public String changePassword(@RequestParam String currentPassword,
+                                 @RequestParam String newPassword,
+                                 @RequestParam String reNewPassword){
+    String result = userService.changePassword(currentPassword, newPassword, reNewPassword);
+        return "redirect:/?" + result ;
+    }
+
+
+8. Возвращаем Стринги ошибок на контроллере: у  /register: return "redirect:/sign-in?" + result;
+                                             у  /change-password  "return "redirect:/?" + result ;
+
+
+9.  <div th:if="${param.success!=null}">

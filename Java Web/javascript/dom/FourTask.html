@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .button {
+            margin-left: 180px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<form id="myform">
+    <img src="1.jpg" id="pic" style="width: 500px; display: flex ">
+    <div class="button">
+        <input type="button" value="< BACK" style="background-color: black ; color: white" onclick="prevImg()">
+        <input type="button" value="NEXT >" style="background-color: black ; color: white" onclick="nextImg()">
+    </div>
+</form>
+
+<script>
+    let pic=["1.jpg"," 2.jpg", "3.jpg", "4.jpg", "5.jpg"];
+    let index = 0;
+
+    function nextImg() {
+         kart = document.getElementById('pic');
+        // index = (index+1)%pic.length;
+        if(index<pic.length-1)index++
+        else index=0;
+        kart.src = pic[index]
+    }
+
+    function prevImg(){
+        kart = document.getElementById('pic');
+        // index = (index-1)%pic.length;
+        if(index>0){
+            index--;
+        }else{
+            index = pic.length-1;
+        }
+        kart.src = pic[index];
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<table style="border: 3px blue solid; border-collapse: collapse;" cellpadding="10">
+
+1. Создание таблицы
+	<table border="2px-границы" cellpadding="10px - пространство между текстом">
+	<tr > 
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+	<tr>
+	</table>
+
+
+ <button>кнопка</button>	
+
+2. Создание полной таблицы
+	<table>
+	<thead>
+	<tr> 
+		<th></th> - создание заголовка
+		<th></th> - создание заголовка
+		<th></th> - создание заголовка
+		<th></th> - создание заголовка
+	<tr>
+	</thead>
+	<tbody>
+		<tr>
+		<td></td> - создание ячейки внизу заголовка
+		<td></td> - создание ячейки внизу заголовка
+		<td></td> - создание ячейки внизу заголовка
+		<td></td> - создание ячейки внизу заголовка
+		</tr>	
+	</tbody>
+	</table>
+
+3. Атрибуты style
+ Элементам HTML можно задавать стили (цвет, ширина, высота, отступы и.т.д.) при помощи атрибуты style.
+
+	<h1 style="color: red;">Hello</h1> цвет слова
+	<h1 style="background-color: yellow; color:blue;">Hello</h1> цвет фона
+
+4.	<p style="background-image: url('1.jpeg'); color: white;">
+		какие-то слова...
+     	</p>
+
+    картинка будет идти фоном, а цвет слов будет белый
+
+5.height, width
+   Параметры height, width настраивают высоту и ширину элемента HTML. В качестве значении можно ставить числа(в пикселях):
+
+   <input type="text" style="width: 100px; height: 50px;">
+
+	<h2 style="width: 200px; height: 200px; background-color: blue; color: white;">Hello</h2>
+
+	можно задавать длину и ширину разным тегам
+
+6. font-size
+
+	Параметр font-size используется для того чтобы задать размер шрифта для текста.
+
+        какой-то текст
+        <p style="font-size: 24px;">
+               какой-то текст
+        </p>
+             какой-то текст
+
+7. Параметр font-weight устанавливает насыщенность шрифта(жирность). Значение указывается в виде чисел от 100 до 900.или с помощью слов (normal, bold)
+
+  какой-то текст
+        <p style="font-weight: 800;">
+               какой-то текст
+        </p>
+             какой-то текст
+
+8. font-style
+
+Параметр font-style определяет начертание шрифта — обычное, курсивное или наклонное. В качестве значении можно ставить одно из: normal, italic или oblique.
+
+  <p style="font-style: italic;">
+            Текст с параметром стиля: normal
+        </p>
+
+9. border
+Параметр border позволяет одновременно установить толщину, стиль и цвет границы вокруг элемента.
+	solid границы будут нарисованы сплошной линией;
+    dashed границы будут нарисованы пунктирной линией;
+    dotted границы будут нарисованы точками;
+    double границы будут нарисованы двойной сплошной линией.
+
+  <p style="border: 3px blue solid;">
+   Разнообразный и богатый опыт укрепление и развитие структуры представляет собой интересный эксперимент проверки 
+  </p>
+
+  style="border: 3px blue solid;" можно заменить на style="border-width: 3px; border-color: blue; border-style: solid;".
+
+ 10. Свойство Padding
+	Параметр padding устанавливает значение полей вокруг содержимого элемента. Полем называется расстояние от внутреннего края границы элемента до его содержимого(контента).
+
+	<button style="padding: 50px;">Кнопка</button>
+
+	Величину полей четырех сторон можно задавать отдельно используя следующие параметры:
+
+	padding-left: устанавливает величину левого поля.
+
+	padding-right: устанавливает величину правого поля.
+
+	padding-top: устанавливает величину верхнего поля.
+
+	padding-bottom: устанавливает величину нижнего поля.
+
+	<button style="padding: 10px;">Кнопка 1</button>
+
+        <button style="padding: 10px 50px;">Кнопка 2</button>
+
+        <button style="padding: 10px 50px 100px;">Кнопка 3</button>
+
+        <button style="padding: 10px 50px 100px 200px;">Кнопка 4</button>
+
+11. Параметр margin устанавливает величину отступа от каждого края элемента. Отступом является пространство от границы текущего элемента до границы родительского элемента(либо до границы соседнего элемента, если он имеется).
+
+	margin-left: устанавливает величину левого отступа.
+	margin-right: устанавливает величину правого отступа.
+	margin-top: устанавливает величину верхнего отступа.
+	margin-bottom: устанавливает величину нижнего отступа.
+
+	  <button style="margin-top: 10px;margin-right: 40px;margin-bottom: 60px;margin-left: 150px;">Кнопка1</button>
+
+        <button>Кнопка2</button>
+        <p>Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру сгенерировать несколько абзацев более менее.</p>
+
+
+ Либо можно сразу задать отсутпы со всех сторон:
+
+<button style="margin: 10px;">Кнопка</button> - задали отступ в 10px со всех сторон
+
+<button style="margin: 10px 20px;">Кнопка</button> - задали отступ в 10px сверху и снизу, 20px слева и справа
+
+<button style="margin: 10px; 20px 30px">Кнопка</button> - задали отступ в 10px сверху, в 20px слева и справа, в 30px снизу
+
+<button style="margin: 10px 20px 30px 40px;">Кнопка</button> - задали отступ в 10px сверху, в 20px справа, в 30px снизу, в 40px слева
+
+Также значением для параметра margin может быть "auto". auto - указывает, что размер отступов будет автоматически рассчитан браузером. Другими словами, если значением отступа указать auto то элемент оттолкнется настолько насколько это максимально возможно.
+
+оттолкнет максимально направо:
+ <p style="border: 2px black solid; width: 500px; margin-left: auto;">
+
+            Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру сгенерировать несколько абзацев...
+
+ </p>
+
+сделает ровно по центру(максимально оттолкнул параграф от левой и правой сторон, соответственно он стоит в центре)
+   <p style="border: 2px black solid; width: 500px; margin: 0 auto;">
+
+            Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру сгенерировать несколько абзацев...
+
+        </p>
+
+12. Все элементы в HTML разметке делятся на строчные, блочные.
+
+	Блочные элементы (такие как <p>, <ol>, <div> <h>) начинаются с новой строки и занимают всё доступное им пространство по ширине, независимо от содержимого. 
+
+	Строчные (такие как <a>, <span>) являются частью строки и размеры элементов определяются их содержимым.
+
+	      <p style="border: 1px solid black">23</p>
+
+
+13.Элемент DIV
+   Элемент <div> (от англ. division - раздел, секция) является универсальным блочным элементом и предназначен для группирования элементов документа с целью изменения вида содержимого через стили.
+
+ 
+ display: flex;
+
+ во вложенных дивах text-align: center;
+
+ 
+
+<header style="background-color: #1877f2; color: white; padding: 10px;">
+    <h1 style="padding-left: 45%">Facebook</h1>
+</header>
+<nav style="background-color: white; padding: 10px; background-color: pink">
+    <ul style="list-style: none; display: flex; justify-content: flex-end">
+        <li style="margin: 0 15px; margin-right: 750px">Home1</li>
+        <li style="margin: 0 15px;">Home2</li>
+        <li style="margin: 0 15px;">Friends</li>
+        <li style="margin: 0 15px;">Messages</li>
+        <li style="margin: 0 15px;">Notifications</li>
+    </ul>
+</nav>
+<main style="margin: 20px; padding: 20px; background-color: white;">
+    <h2>Welcome to your Facebook feed!</h2>
+    <p>This is where all the posts, photos, and updates from your friends will appear.</p>
+</main>
+<footer style="text-align: center; background-color: #e4e6eb; margin-top: 30%">
+    &copy; 2023 Facebook Inc.
+</footer>

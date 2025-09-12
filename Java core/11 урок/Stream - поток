@@ -1,0 +1,214 @@
+Stream API в Java
+
+Stream API в Java - это мощный инструмент для работы с коллекциями данных, появившийся в Java 8. Основное преимущество использования Stream API заключается в возможности удобной обработки последовательностей элементов без необходимости явно использовать циклы.
+
+Основные концепции Stream API:
+
+Stream (поток) – последовательность элементов, поддерживающая последовательные вычисления.
+
+Stream API – набор инструментов для работы с потоками.
+
+Основные задачи Stream API – упрощение работы с коллекциями данных, включая фильтрацию, сортировку, преобразование и агрегацию данных.
+
+Лямбда-выражения – активно используются в Stream API, сокращая объем кода.
+
+
+
+1. Перебор элементов (метод forEach)
+
+Метод forEach() применяется для итерации по каждому элементу потока:
+
+List<String> names = Arrays.asList("Ilyas", "Aybek", "Amanzhan", "Assylkhan", "Azamat");
+names.stream().forEach(s -> System.out.println(s.toLowerCase()));
+
+
+
+2. Фильтрация (метод filter)
+
+Метод filter() позволяет выбрать из потока только те элементы, которые соответствуют заданному условию.
+Он возвращает новый поток из элементов, которые удовлетворяют этому условию.
+
+Пример: Фильтрация имен, содержащих подстроку "as":
+
+ List<String> names = Arrays.asList("Ilyas", "Aybek", "Amanzhan", "Assylkhan", "Azamat");
+
+names.stream()
+     .filter(s -> s.toLowerCase().contains("as"))
+     .forEach(System.out::println);
+
+Пример: Получение списка четных чисел:
+ 
+ List<Integer> numbers = Arrays.asList(23, 20, 18);
+ List<Integer> evenNumbers = numbers.stream()
+                                   .filter(n -> n % 2 == 0)
+                                   .collect(Collectors.toList());
+
+ System.out.println(evenNumbers);
+
+Подсчет количества четных элементов:
+
+ long count = numbers.stream().filter(n -> n % 2 == 0).count();
+ System.out.println("Количество четных чисел: " + count);
+
+
+3. Преобразование элементов (метод map)
+
+Метод map() применяется для преобразования элементов потока.
+Применяет указанное выражение или функцию к каждому элементу потока и возвращает новый поток.
+
+Пример: Возведение чисел в квадрат:
+
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4);
+List<Integer> squaredNumbers = numbers.stream()
+                                      .map(n -> n * n)
+                                      .collect(Collectors.toList());
+
+Пример: Нахождение суммы чисел:
+
+List<Integer> numbers = Arrays.asList(10, 20, 30);
+int sum = numbers.stream().mapToInt(Integer::intValue).sum();
+
+
+Пример: Нахождение максимума:
+
+
+int max = list.stream().mapToInt(Integer::intValue).max().orElse(0);
+
+
+Пример: Нахождение минимума:
+
+int min = list.stream().mapToInt(Integer::intValue).min().orElse(0);
+
+
+
+4. Удаление дубликатов (метод distinct)
+
+Метод distinct() убирает дубликаты из потока:
+
+List<Integer> numbers = Arrays.asList(1, 2, 2, 3, 4, 4, 5);
+List<Integer> uniqueNumbers = numbers.stream().distinct().collect(Collectors.toList());
+System.out.println(uniqueNumbers);
+
+5. Поиск первого элемента (метод findFirst)
+
+Метод findFirst() позволяет получить первый элемент из потока:
+
+Optional<Integer> first = numbers.stream().findFirst();
+first.ifPresent(System.out::println);
+
+6.  Агрегация данных (метод reduce)
+
+Метод reduce() выполняет свертку потока в одно значение.
+Метод объединяет элементы по определенной операции и возвращает результат.
+
+Пример: Суммирование элементов:
+
+int sum = numbers.stream().reduce(0, (a, b) -> a + b); - суммирует все элементы
+
+List<Integer> numbers = Arrays.asList(10, 20, 30);
+int sum = numbers.stream().reduce(0, Integer::sum);
+System.out.println("Сумма: " + sum);
+
+
+Пример: Поиск максимального значения:
+
+List<Integer> numbers = Arrays.asList(99, 10, 999, 10);
+int max = numbers.stream().reduce(Integer.MIN_VALUE, Integer::max);
+
+
+Пример: Поиск минимального значения:
+
+List<Integer> numbers = Arrays.asList(99, -10, 999, 10);
+int min = numbers.stream().reduce(Integer.MAX_VALUE, Integer::min);
+
+
+7. Сортировка элементов (метод sorted)
+
+Метод sorted() используется для сортировки элементов в потоке. 
+Он может применяться как без аргументов (естественная сортировка), так и с компаратором для пользовательской сортировки.
+
+
+List<Integer> numbers = Arrays.asList(65, 23, 231, 23);
+numbers.stream().sorted().forEach(System.out::println); // По возрастанию
+
+numbers.stream().sorted(Collections.reverseOrder()).forEach(System.out::println); // По убыванию
+
+
+Сортировка через компаратор:
+
+List<Person> people = Arrays.asList(
+    new Person("Alice", 30),
+    new Person("Bob", 25),
+    new Person("Charlie", 35)
+);
+
+people.stream()
+      .sorted(Comparator.comparingInt(person -> person.age))
+      .forEach(System.out::println);
+
+names.sort(Comparator.comparingInt(String::length));
+
+
+
+Сортировка по нескольким полям (сначала по возрасту, потом по имени)
+Этот код сначала сортирует по возрасту, а затем по имени, если возраст совпадает.
+
+people.stream()
+      .sorted(Comparator.comparingInt((Person p) -> p.age)
+                        .thenComparing(p -> p.name))
+      .forEach(System.out::println);
+
+
+
+8. Преобразование многомерных структур (метод flatMap)
+
+Метод flatMap() используется для работы с вложенными структурами данных. 
+Он преобразует каждый элемент потока в другой поток (Stream), 
+а затем объединяет все полученные потоки в один общий поток.
+
+Основное отличие flatMap() от map():
+
+map() выполняет отображение элементов, но сохраняет структуру вложенности (например, List<List<T>>).
+flatMap() избавляется от вложенности, превращая поток потоков в один плоский поток (List<T>).
+
+
+Пример: Разбиение предложений на отдельные слова:
+
+List<String> sentences = Arrays.asList("Hello world", "Java Stream API", "flatMap example");
+List<String> words = sentences.stream()
+                              .flatMap(sentence -> Arrays.stream(sentence.split(" ")))
+                              .collect(Collectors.toList());
+System.out.println(words);
+
+
+
+Преобразование списка списков в один список
+
+Допустим, у нас есть список студентов, у каждого из которых есть список изучаемых предметов:
+
+class Student {
+    String name;
+    List<String> subjects;
+}
+
+List<Student> students = Arrays.asList(
+    new Student("Alice", Arrays.asList("Math", "Physics")),
+    new Student("Bob", Arrays.asList("History", "Math")),
+    new Student("Charlie", Arrays.asList("Physics", "Chemistry"))
+);
+
+List<String> allSubjects = students.stream()
+                                   .flatMap(student -> student.getSubjects().stream()) // Разворачиваем список предметов
+                                   .distinct() // Убираем дубликаты
+                                   .collect(Collectors.toList());
+
+
+
+
+Заключение
+
+Stream API предоставляет удобные и лаконичные методы для работы с коллекциями данных, позволяя сократить код и сделать его более читабельным. Использование Stream API упрощает фильтрацию, преобразование, агрегацию и сортировку данных, обеспечивая мощные инструменты для функционального программирования в Java.
+
+
+
+

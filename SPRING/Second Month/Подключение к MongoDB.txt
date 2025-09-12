@@ -1,0 +1,28 @@
+1. https://www.mongodb.com/try/download/community - скачиваем обязательно
+2. https://www.mongodb.com/try/download/compass - скачиваем
+
+на маке смотрим что добавился в список монго:
+  brew tap mongodb/brew
+  brew install mongodb-community
+  brew services start mongodb/brew/mongodb-community
+  brew services list - смотрим запустилась ли
+
+  mongosh - проверка подключения
+  
+  Если MongoDB уже установлен, но не отображается в brew services, попробуйте запустить сервер          
+  напрямую:
+  mongod --config /usr/local/etc/mongod.conf
+
+на винде тоже самое только:
+  https://www.mongodb.com/try/download/community -  установка сервера 
+  net start MongoDB - прописать в командной строке
+  
+  запуск Запуск MongoDB вручную:
+  cd C:\Program Files\MongoDB\Server\{версия}\bin - перейти через командную строку
+  mongod - прописать в командной строке, после того как туда перейти
+  
+
+
+  			
+
+

@@ -1,0 +1,90 @@
+Unit тесты (или модульные тесты) — это небольшие тесты, написанные для проверки конкретных функций 
+или модулей программы на корректность работы. Они являются частью методологии разработки программного обеспечения 
+и играют ключевую роль в поддержании качества кода. Рассмотрим подробнее, что это такое и для чего они нужны.
+
+Что такое Unit тесты?
+Unit тесты фокусируются на самых маленьких тестируемых частях программы — обычно на отдельных 
+методах или классах. Они написаны так, чтобы работать быстро и не зависеть от внешних условий или других частей программы.
+Идея состоит в том, чтобы изолировать каждую часть программы и проверить, правильно ли она работает сама по себе.
+
+Для чего нужны Unit тесты?
+Обнаружение ошибок на раннем этапе: Unit тесты помогают выявлять проблемы в коде на самых ранних этапах разработки, 
+что значительно упрощает и удешевляет их исправление.
+
+Упрощение рефакторинга: С наличием надежного набора модульных тестов, разработчики могут 
+вносить изменения в код, не опасаясь случайно нарушить работоспособность существующих функций.
+
+Документация кода: Unit тесты могут служить формой документации, показывая, как предполагается использовать API. 
+Новым разработчикам в команде они помогают быстрее понять, как работают различные части системы.
+
+Повышение качества кода: Регулярное использование модульных тестов способствует написанию более чистого, 
+эффективного и безопасного кода, поскольку разработчики стремятся к созданию легко тестируемых компонентов.
+
+Ускорение процесса разработки: Хотя написание модульных тестов требует дополнительного времени в начале, 
+в долгосрочной перспективе оно способствует более быстрой и эффективной разработке за счет снижения количества ошибок и упрощения внесения изменений.
+
+
+Практика:
+
+1. Меняем название класса тест внутри главной папки 'test'. Название класса можно указать любое.
+
+Добавляем тест на ставнение сущности и его DTO:
+
+
+@Autowired
+ItemMapper itemMapper;
+
+@Test
+void checkEntityItem(){
+Item item = new Item();
+item.setName("Komp");
+item.setMark("4");
+
+ItemDTO itemDTO = itemMapper.toDto(item);
+
+Assertions.assertEquals(item.getName(), itemDTO.getName());
+Assertions.assertEquals(item.getMark(), itemDTO.getGrade());
+Assertions.assertEquals(item.getDescription(), itemDTO.getDescription());
+}
+
+
+2. Запускаем через Tasks -> build
+
+3. Закомментить ожну из аннотаций в ItemMapper, clean -> build
+
+4. Проверка внедрения в базу. Создаем новый метод:
+
+Создаем новую директорию resources в папке test и отправляем туда application.properties
+
+Создаем новую схему и указываем ее в application.properties:
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/postgres?currentSchema=test-b
+spring.datasource.username=postgres
+spring.datasource.password=postgres
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=update
+
+
+5. Прописываю метод в test
+
+	@Autowired
+	ItemService itemService;
+
+
+@Test
+	void checkInsertDB() {
+		Item item = new Item();
+		item.setName("Komp");
+		item.setPrice(200);
+
+
+		ItemDTO itemDTO = itemService.createItem(itemMapper.toDto(item));
+
+		Assertions.assertNotNull(itemDTO);
+		Assertions.assertNotNull(itemDTO.getId());
+		Assertions.assertEquals(item.getName(), itemDTO.getName());
+		Assertions.assertEquals(item.getPrice(), itemDTO.getPrice());
+		itemService.deleteItem(itemDTO.getId());
+
+
+	}

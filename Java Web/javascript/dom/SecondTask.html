@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .button{
+            padding: 10px;
+            width: 70px;
+            height: 30px;
+            color: white;
+            background-color: darkblue;
+        }
+    </style>
+</head>
+<body>
+<form id="myform" style="display: flex">
+    <button type="button"  onclick="plus()" class="button" id="btn">+</button>
+    <div id="number" style="padding: 10px">1</div>
+    <button type="button"  onclick="minus()" class="button">-</button>
+
+</form>
+<script>
+    function plus() {
+       number.innerText++;
+    }
+    function minus(){
+       number.innerText--;
+    }
+</script>
+</form>
+</body>
+</html>

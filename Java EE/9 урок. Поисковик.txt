@@ -1,0 +1,73 @@
+1. Создаем на главной странице Jsp поисковик импут, оборачивает его в форму
+ <form action="/main" method="get">
+        <div class="row mt-3">
+            <div class="col-11">
+                <input type="text" name="key" class="form-control" placeholder="search">
+            </div>
+            <div class="col-1">
+                <button class="btn btn-md btn-success w-100">SEARCH</button>
+            </div>
+        </div>
+    </form>
+
+
+2. В DBConnector прописываем метод на поиск машины searchCar. Используем LIKE sql.
+	
+public static ArrayList<Car> searchCars(String key) {
+        ArrayList<Car> cars = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * " +
+                    "FROM cars car " +
+                    "INNER JOIN cities c ON t.city_id = c.id " +
+                    "WHERE LOWER(car .model) LIKE LOWER(?) OR LOWER(car.brand) LIKE LOWER(?) " +
+                    "ORDER BY c.id ASC");
+
+            statement.setString(1, key);
+            statement.setString(2, key);
+
+            ResultSet resultSet = statement.executeQuery();
+
+             while (resultSet.next()) {
+                Car car = new Car();
+                car.setId(resultSet.getInt("id"));
+                car.setPrice(resultSet.getInt("price"));
+                car.setVolume(resultSet.getDouble("volume"));
+                car.setModel(resultSet.getString("model"));
+                car.setBrand(resultSet.getString("brand"));
+                car.setDate(resultSet.getDate("date"));
+
+                City city = new City();
+                city.setId(resultSet.getInt("city_id"));
+                city.setRegion(resultSet.getString("region"));
+                city.setCity_name(resultSet.getString("city_name"));
+
+                car.setCity(city);
+
+                cars.add(car);
+            }
+            statement.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return cars;
+    }
+
+3. В MainServlet находим машины которые улоблетворяют поиску. "%" - не важно как начинается, и как заканчивается - главное слово внутри
+
+ String key = request.getParameter("key");
+
+        if(key!=null){
+            ArrayList<Car> cars = DBConnector.searchCar("%" + key + "%");
+            request.setAttribute("cars", cars);
+
+        }else {
+            ArrayList<Car> cars= DBConnector.getCars();
+            request.setAttribute("cars", cars);
+        }
+
+и как заканчивается главное чтобы было это слово.
+
+
+4. Также меняем дополняем поиск в навбаре

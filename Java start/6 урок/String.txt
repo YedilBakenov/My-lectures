@@ -1,0 +1,41 @@
+1. Создание через new
+2. char
+3. Массив char[]symbols. String word = new String(symbols);
+4. Конкотенция(+)
+5. Массив из String
+6. toCharArray() - преобразование строки к массиву из char и обратно в стринг: new String(массив из char)
+вывод через цикл for
+String name = "Yedil";
+char [] result = name.toCharArray();
+for (int i = 0; i <result.length ; i++) {
+            System.out.println(result[i]);
+        }
+7.n.next() n.nextLine();
+8.прибавление к String
+String name ="";
+name+="ds";
+
+Методы класса String:
+1. length() - длина
+2. charAt() через цикл for и сразу. Так же что их нельзя сравнивать через equals
+3. equals() - сравнение
+4. toLowerCase() - в нижний регистр
+5. toUpperCase() - в верхний регистр
+6. equalsIgnoreCase() - сравнение без учета регистров
+7. trim() - удаление пробелов перед словом и после
+8. replace() - заменяет старое значение на новое
+9. substring() - получить определенный кусок текста
+10. Character.isDigit()  - проверка на число
+11. Сharacter.isUpperCase() - проверка на верхнйи регистр
+12. valueof() - конвертация к String
+int a = 56;
+String name = String.valueOf(a);
+13. Integer.parseInt() - перевод в числo, только String!
+14. indexOf() - ищет в строке заданный символ или строку
+String name = "Yedil"; 
+System.out.println(name.indexOf("l")); возвращат -1, если не находит
+15. contains() - метод на содержание - boolean
+16. toCharArray() - преобразование строки к массиву из char и обратно в стринг: new String(массив из char)
+17. split()
+
+ 

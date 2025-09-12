@@ -1,0 +1,275 @@
+Spring Security - это настраиваемый фреймворк для обеспечения безопасности приложений на платформе Java.
+
+Аутентификация (Authentication): процесс проверки подлинности пользователя.
+
+Авторизация (Authorization): процесс предоставления пользователю доступа к ресурсам на основе его ролей и прав. Spring Security позволяет гибко настраивать правила доступа к различным частям приложения.
+
+
+1. Создаем новый проект и подключаем Spring Security
+2. Подключаем базу в application properties
+
+4. Создаем две сущности: User и Permission(уровень доступа) связка между ними ManyToMany
+
+у User параметры:
+String email
+String password
+String fullName
+List<Permission> permissions
+
+у Permission Permission параметры:
+String role
+
+
+@Entity
+@Table(name = "USERS")
+@Getter
+@Setter
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private int id;
+
+    @Column(name = "EMAIL")
+    private String email;
+
+
+    @Column(name = "PASSWORD")
+    private String password;
+
+    @Column(name = "FULLNAME")
+    private String fullName;
+
+   
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Permission> permissions;
+
+}
+
+
+@Entity
+@Table(name = "PERMISSION")
+@Getter
+@Setter
+public class Permission {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private int id;
+
+    @Column(name ="NAME")
+    private String role;
+}
+
+
+5. имплементимся от интерфейса UserDetails в классе User
+
+public class User implements UserDetails 
+
+
+6. начинаем реализовывать в классе User все астрактные методы UserDetails
+
+также добавляем метод, который возвращает password
+в остальных случаях ставим true
+
+
+
+7. класс Permission имплементится от GrantedAuthority 
+
+возвращаем роли:
+    @Override
+    public String getAuthority() {
+        return this.role;
+    }
+
+8. Создаем репозиторий PermissionRepository
+
+@Repository
+public interface PermissionRepository extends JpaRepository <Permission, Integer> {
+}
+
+@Repository
+public interface UserRepository extends JpaRepository <User, Integer> {
+    User findByEmail(String email);
+}
+
+
+10. создаем сервисы:
+
+@Service
+public class UserService {
+
+    @Autowired
+    UserRepository userRepository;
+}
+
+11. Создаем класс SecurityConfig  в папке config:
+
+@Configuration
+@EnableWebSecurity  -  Включает поддержку безопасности веб-приложений с помощью Spring Security.
+@EnableMethodSecurity - Включает поддержку безопасности на уровне методов, что позволяет использовать аннотации безопасности, такие как @PreAuthorize и @Secured, для ограничения доступа к методам.
+@RequiredArgsConstructor  -  Lombok-аннотация, которая автоматически создает конструктор для всех final полей. В данном случае, это permissionRepository и userRepository.
+public class SecurityConfig {
+
+    private final UserRepository userRepository;
+   private final PermissionRepository permissionRepository;
+
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return username -> {
+            var user = userRepository.findByEmail(username);
+            if (user == null) {
+                throw new UsernameNotFoundException("User Not Found");
+            } else return user;
+        };
+    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {  -  Метод, создающий и конфигурирующий цепочку фильтров безопасности.
+        var authManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class); - Получение объекта AuthenticationManagerBuilder для настройки аутентификации.
+        authManagerBuilder - Настройка аутентификации
+                .userDetailsService(userDetailsService())
+                .passwordEncoder(passwordEncoder());
+
+        http.csrf(AbstractHttpConfigurer::disable); - Отключение защиты от CSRF
+
+        http.exceptionHandling(eh -> eh.accessDeniedPage("/forbidden")); - Настройка обработки исключений, указывая страницу, на которую будет перенаправлен пользователь в случае отказа в доступе.
+
+        http.formLogin(fl -> - : Настройка формы логина.
+            fl.loginProcessingUrl("/auth") - : URL для обработки логина (куда отправляются данные формы).
+                    .usernameParameter("email") Указание параметра имени пользователя (email).
+                    .passwordParameter("password") Указание параметра пароля.
+                    .loginPage("/sign-in")  URL страницы логина.
+                    .defaultSuccessUrl("/", true) URL, на который перенаправляется пользователь после успешного логина. Параметр true указывает, что пользователь всегда будет перенаправлен на эту страницу.
+                    .failureUrl("/sign-in?error")); URL, на который перенаправляется пользователь в случае ошибки логина.
+
+        http.logout(lg -> lg.logoutUrl("/logout").logoutSuccessUrl("/sign-in")); - Настройка выхода из системы.
+ 
+        return http.build(); завершение конфигурации и построение цепочки фильтров безопасности.
+    }
+}
+
+
+@EnableWebSecurity используется для активации веб-безопасности в Spring приложении. 
+вы включаете обработку безопасности для веб-запросов. Это позволяет настраивать такие аспекты, 
+как URL-адреса, которые должны быть защищены
+
+@EnableMethodSecurity позволяет активировать безопасность на уровне методов в приложении.
+
+
+
+12. Добавляем роли в базу через ключевое слово ROLE
+    
+
+13. Добавляем пользователей в базу
+
+Шифруем пароли через https://bcrypt-generator.com/ и добавляем их в базу, не забываем удалять пробелы в таблице
+
+14. указываем роли в таблице, которая создалась при связке таблиц
+
+15. В классе User добавляем над параметром 
+   @ManyToMany(fetch = FetchType.EAGER)
+    private List<Permission> permissions;
+
+EAGER Loading
+Когда используется стратегия загрузки EAGER (жадная загрузка), JPA загружает связанные сущности немедленно с основной сущностью. Это означает, что когда вы загружаете определённую сущность из базы данных, все связанные с ней сущности,
+помеченные как EAGER, будут также загружены в то же время.
+
+LAZY Loading
+Стратегия LAZY (ленивая загрузка) означает, что связанные сущности загружаются по требованию, то есть только тогда, когда к ним осуществляется доступ. Это помогает улучшить производительность приложения,
+снижая изначальное время загрузки сущности и количество используемой памяти.
+
+
+16. создаем контроллер и добавляем аннотации @PreAuthorize("isAuthenticated()") и @PreAuthorize("isAnonymous()")
+
+@Controller
+@RequiredArgsConstructor
+public class HomeController {
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping(value = "/")
+    public String mainPage(){
+        return "index";
+    }
+
+    @PreAuthorize("isAnonymous()")
+    @GetMapping(value = "/sign-in")
+    public String signIn(){
+        return "sign-in";
+    }
+}
+
+
+17. создаем html страницу sign-in, как мы указали в конфиге и там создаем форму на отправку почты и пароля:
+
+<body>
+<form action="/auth" method="post">
+    <input type="text" name="email">
+    <input type="password" name="password">
+    <button>SIGN IN</button>
+</form>
+</body>
+
+18. показать что можно скопировать html, который генерит сам security
+
+19. добавляем возможность выхода на главной странице index:
+
+  <form action="/logout" method="post">
+        <button>LOG OUT</button>
+    </form>
+
+20. Создаем в контроллере страничку, на которую может попасть User только с ролью Admin:
+
+  @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping("/admin")
+    public String adminPage(){
+        return "admin-page";
+    }
+
+21. Создаем данную страничку admin-page: Пробуем зайти на нее с ролью Админа и без
+
+также добавляем ссылку на данную страницу в index:
+
+
+
+<body>
+ <h1>THIS IS ADMIN PAGE!</h1>
+   <h1 th:text="${#authentication.getPrincipal().email}"></h1>
+</body>
+
+22.создаем страницу forbidden
+		
+<body>
+ <h1>ACCESS DENIED!</h1>
+</body>
+
+23.создаем в контроллере GetMapping("/forbidden"):
+
+ @GetMapping(value = "/forbidden")
+    public String forbiddenPage(){
+        return "forbidden";
+    }
+
+
+24. Создаем в UserService метод, который будет подтягивать нам текущего USer из сессии:
+
+ public User getCurrentUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (User) authentication.getPrincipal();
+    }
+
+25. также може проверить вывод в консоли:
+ public String mainPage(){
+        System.out.println(userService.getCurrentUser().getFullName());
+        return "index";
+    }
+
+26.

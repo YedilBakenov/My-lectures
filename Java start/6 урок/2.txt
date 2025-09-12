@@ -1,0 +1,54 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+
+        String name = "YE5DIL";
+        String name2 = "timur";
+
+        name.length(); // возвращает длину слова
+        name.charAt(0);// находим символ по его индексу, индексы начинаются с нуля
+        name.equals(name2);// сравнивает две переменные , возвращает boolean
+        name.equalsIgnoreCase(name2);// сравнивает две переменные без учета регистра, возвращает boolean
+        name.toLowerCase(); // возводит в верхний регистр
+        name2.toUpperCase();// возводит в нижний регистр
+//        for (int i = 0; i <name2.length() ; i++) {  // выводит каждую букву слова через цикл
+//            System.out.println(name2.charAt(i));
+//        }
+        name.trim(); // убирает пробелы справа и слева, но не между букв
+        name.replace(" ", ""); // заменяет старое значение на новое
+        name.substring(3, 6);// получить определенный кусок текста
+        Character.isDigit(name.charAt(2));// проверка на число
+        Character.isUpperCase(name.charAt(0)); // проверка на вверхний регистр
+        Character.isLowerCase(name.charAt(0)); // проверка на нижний регистр
+        Character.isAlphabetic(name.charAt(0)); // проверка на букву
+
+        int a = 5;
+        int b = 5;
+
+        String number1 = String.valueOf(a);// переводит любой тип в String
+        String number2 = String.valueOf(b);
+        String number3 = String.valueOf(23.2f);
+
+        String num1 = "10";
+
+        int c = Integer.parseInt(num1); // переводит String в формат intint e = Integer.parseInt("5");
+
+//        String word = "55YED15";
+//        int sum = 0;
+//        for (int i = 0; i <word.length() ; i++) {
+//               if(Character.isDigit(word.charAt(i))){
+//                    sum+=Integer.parseInt(String.valueOf(word.charAt(i)));
+//               }
+//        }
+//        System.out.println(sum);
+        String word1 = "Yedil";
+        word1.indexOf("dily"); ; // выводит индекс по его строке либо символу. Если не назходит символ то выводит -1
+        word1.contains("Yedill"); // проверка на содержание символа, либо строки, возвращает boolean
+
+        char [] symbols = word1.toCharArray(); // создает массив char из строки
+
+    }
+}
+

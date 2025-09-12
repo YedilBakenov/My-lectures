@@ -1,0 +1,45 @@
+Разделение по ролям.
+
+1. В таблице users добавляем новую строку - role_id
+  1 - это админы
+  2 - это обычные пользователи
+2. В сущности User добавляем новое поле - int role;
+
+3. В навбаре делаем проверку для админов и простых юзеров на добавление машины:
+<%
+                    if (currentUser != null) {
+                %>
+                    <%
+                        if(currentUser.getRole()==1){
+                    %>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/add-car">ADD CAR</a>
+                </li>
+                <%
+                    }
+                %>
+
+3.1 в сервлете add-car , также добавляем новую проверку на role:
+
+ if (user != null) {
+   if(currentUser.getRole()==1){
+
+            request.setAttribute("cities", DBConnection.getCities());
+
+            request.getRequestDispatcher("/html/add-page.jsp").forward(request, response);
+        } else request.getRequestDispatcher("/html/403.jsp").forward(request, response);
+	else responce.sendRedirect("/");
+}
+
+3.2.  Добавляем 403 ошибку - Aссess Forbidden! отдельным jsp
+
+4. В DBConnection добавлям в метод   public static User getUser(String email):
+  user.setRole(resultSet.getInt("role_id"));
+
+5. Создаем в AddTeacherServlet доступ, если будет role не админ, то будет навпралять на страницу ошибки
+
+6. В ДБКоннекторе добавлям в метод addUser role_id
+
+7. В сервлете RegisterServlet устанвливаем user.setRole(2); - что автоматически создавалась роль 2
+
+

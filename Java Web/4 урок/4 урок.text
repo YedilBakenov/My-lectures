@@ -1,0 +1,182 @@
+https://flexboxfroggy.com/#ru
+
+Flexbox дает возможность легко создавать адаптивные макеты, 
+управлять порядком элементов, выравниванием их содержимого.
+
+
+1. Можно убрать границы прописав
+*{
+	margin:0;
+}
+
+2.  Делаем div флекс контейнером, все его дочерние элементы становятся флекс элементами	
+
+			<style>
+*{
+			margin: 0px;
+		}
+		.parent{
+			display: flex;
+		}
+
+		.parent div{
+			border: 1px solid black;
+		}
+		
+			</style>
+		</head>
+		<body>
+			<div class="parent">
+				<div>123123</div>
+				<div>123123</div>
+				<div>123123</div>
+			</div>
+		</body>
+		</html>
+
+3. flex-direction:
+	направление флекс элементов, по умолчанию стоит row; 
+	flex-direction: row;
+	можно изменить в виде столбца:
+	flex-direction: column;
+
+4. flex-direction: column-reverse;
+	все элементы станут по столбцу, но порядок изменится
+	прописать номера столбцов, чтобы лучше было видно
+
+5. flex-direction: row:reverse;
+
+Выравнивание элементов:
+6. justify-content:flex-start; - выравниваются по левому краю
+	уравнивание элементов
+
+   justify-content:flex-end; - 
+	выравниваются по правому краю
+
+	justify-content:center;
+	выравниваются по центру
+
+	justify-content:space-between;
+	создает пространство равномерное между элементами, но слева и справа нет расстояния
+
+	justify-content:space-around;
+	по краям расстояние в два раза меньше чем между элементами
+
+	justify-content:space-evenly;
+	расстояние одинаковое по краям и между элементами
+
+
+7. Еще одно свойство align-items;
+	ось распологается по вертикали, происходит вертикальное выравнивание.
+	все свойства задаются паренту, а не элементам
+
+<style type="text/css">
+		*{
+			margin: 0px;
+		}
+		.parent div{
+			border: 1px solid black;
+			margin: 5px;
+		}
+		.parent{
+			display: flex;
+			flex-direction: row;
+			height: 100px;
+			border: 2px solid blue;
+			align-items: flex-start;
+		}
+
+	</style>
+
+
+		align-items: flex-start; - прижимает элементы вверх
+
+		align-items: flex-end; - прижимает элементы вниз
+
+		align-items: center; - делает по верикали по центру
+
+		align-items: stretch; - максимально растягивает элементы по высоте
+
+Можно центрировать лементы как по верикали:
+align-items: center;
+
+Так и по горизонтали:
+justify-content:center;
+
+8. flex-wrap   - разрешает спуститься флекс элементам на новые строки по умолчанию стоит на nowrap; - что элементы не будут переноситься вниз
+
+  .parent div {
+                        border: 2px black solid;
+                       	margin: 5px;
+                }
+
+
+а если указать wrap - то элементы будут переноситься на новую строку
+
+
+<style type="text/css">
+		*{
+			margin: 0px;
+		}
+		.parent div{
+			border: 1px solid black;
+			margin: 5px;
+		}
+		.parent{
+			display: flex;
+			flex-wrap:wrap;
+			flex-direction: row;
+			border: 2px solid blue;
+		}
+
+	</style>
+
+ спускаться они будут только если элементы не уместяться в одной строке
+
+
+ создать кучу дивов со словами и показать на примере, что они уходят за границу
+ <div class = "parent">
+ <div>1) Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру сгенерировать несколько</div>
+ <div>2) Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру сгенерировать несколько</div>
+ <div>3) Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру сгенерировать несколько</div>
+ <div>4) Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру сгенерировать несколько</div>
+ <div>1) Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру сгенерировать несколько</div>
+ <div>2) Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру сгенерировать несколько</div>
+ <div>3) Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру сгенерировать несколько</div>
+ <div>4) Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру сгенерировать несколько</div>
+ <div>1) Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру сгенерировать несколько</div>
+ <div>2) Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру сгенерировать несколько</div>
+ <div>3) Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру сгенерировать несколько</div>
+ <div>4) Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру сгенерировать несколько</div>
+ </div>
+
+9. flex-wrap: wrap-reverse; - переворачивает элементы по вертикали
+
+
+10. flex-wrap: wrap;
+	align-content:flex-start; flex-end; center; flex-between; space-around; space-evenly;
+	Работает только когда flex-wrap: wrap;
+
+.parent{
+			height: 400px;
+			display: flex;
+			flex-wrap:wrap;
+			align-content: flex-end;
+			border: 2px solid blue;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+flex-wrap: wrap-reverse;
+flex-direction: column-reverse;
+justify-content: center;
+align-content: space-between;

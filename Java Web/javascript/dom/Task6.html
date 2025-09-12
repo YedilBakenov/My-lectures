@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<form id="myform">
+    Email: <br>
+    <input type="text" name="email">
+    <div id="emailError" class="error"></div>
+    <br>
+    Password:<br>
+    <input type="password" name="password">
+    <div id="passwordError" class="error"></div>
+    <br>
+    Retype password:<br>
+    <input type="password" name="rePassword">
+    <div id="retpasswordError" class="error"></div>
+    <br>
+    <input type="button" value="REGISTER" onclick="checkUser()">
+</form>
+</body>
+
+<script>
+    let emails = [
+        "ilyas@gmail.com",
+        "mikaelkiev@gmail.com",
+        "goldedil@mail.ru"
+    ];
+    let emailField = myform.elements.email
+    let passField = myform.elements.password
+    let retPassField = myform.elements.rePassword
+
+    function checkUser() {
+        if (emailField.value == "")
+            emailError.innerHTML = 'Please enter login';
+        if (passField.value == "")
+            passwordError.innerHTML = "Please enter password";
+        if (emailField.value != "" && passField != "" && retPassField != "") {
+
+            for (let i = 0; i < emails.length; i++) {
+                if (emails[i] == emailField.value)
+                    emailError.innerHTML = 'Current email is already in use'
+            }
+            if (passField.value.length<6) {
+                passwordError.innerHTML = "Password length at least must be 6 symbols";
+            }
+
+            if (passField.value != retPassField.value) {
+                retpasswordError.innerHTML = "Retype Password";
+            }
+
+        }
+    }
+</script>
+</html>

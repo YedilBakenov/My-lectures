@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Задание9</title>
+</head>
+<body>
+<script>
+  let count = parseInt(prompt("Введите кол-во денег"));
+  alert("INSERT YOUR AMOUNT IN KZT:" + "\n" +
+
+  "1- CONVERT TO USD" + "\n" +
+  "2- CONVERT TO EUR" + "\n" +
+  "3- CONVERT TO GBP");
+ let currency = parseInt(prompt("Выберите валюту"));
+ if(currency==1) alert(count + " KZT = " + (count/380).toFixed(2) + " USD");
+ else if(currency==2) alert(count + " KZT = " + (count/430).toFixed(2) +" EUR");
+ else if(currency==3) alert(count + " KZT = " + (count/480).toFixed(2) +" GBR");
+</script>
+</body>
+</html>

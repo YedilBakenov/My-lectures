@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Задание15</title>
+</head>
+<body>
+<script>
+  let tenge = parseInt(prompt("Введите кол-во тенге"));
+  if(tenge%380==0) alert("ONLY " + tenge/380 + " USD");
+  else if (tenge%380!=0) alert((tenge/380).toFixed(0) + " USD and " + (((tenge/380).toFixed(2) - Math.floor(tenge/380).toFixed(0))*100).toFixed(0) + " cents");
+</script>
+</body>
+</html>
+

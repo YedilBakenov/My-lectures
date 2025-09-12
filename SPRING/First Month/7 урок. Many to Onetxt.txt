@@ -1,0 +1,129 @@
+Связка таблиц.
+
+Для связывания таблиц используются аннотации JPA, такие как @OneToOne, @OneToMany, @ManyToOne и @ManyToMany,
+которые позволяют моделировать отношения между сущностями в объектно-ориентированном стиле.
+
+@ManyToOne в Spring Framework с использованием Spring Data JPA обозначает тип связи между двумя сущностями,
+где одна сущность может быть связана с множеством экземпляров другой сущности. 
+Это классическое отношение "один ко многим" с обратной стороны, т.е., если у нас есть 
+отношение "один ко многим" между сущностями A и B (один A имеет множество B),
+то в контексте сущности B это будет отношение ManyToOne к A.
+
+Первое слово относится к той сущности в которой пишешь аннотацию
+рассмотреть примеры с данными аннотациями:
+
+@OnetoOne 
+@OneToMany
+@ManyToOne
+@ManyToMany
+
+1. Создаем новую сущность Language
+
+@Entity
+@Table(name = "LANGUAGES")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Language {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private int id;
+
+    @Column(name = "NAME", unique = true, nullable = false)
+    private String name;
+
+    @Column(name ="DESCRIPTION", columnDefinition = "TEXT")
+    private String description;
+}
+
+перезагружаем idea
+
+2. удаляем поле subject из прошлой таблицы
+   удаляем поле subject из сущности Teacher	
+		
+3. Добавляем новое поле в сущность:
+    @ManyToOne
+    @JoinColumn(name = "LANGUAGE_ID") - для указания столбца, который будет использоваться как внешний ключ в отношении между двумя таблицами.
+    private Language language;
+
+4. показать как выглядит таблица после перезапуска
+
+5. добавить новый бин репозитория для новой сущности 
+
+@Repository
+public interface LanguageRepository extends JpaRepository<Language, Integer> {
+}
+
+6. заполнить обе базы данных
+
+7. меняем html на вывод верного поля:
+
+отдельно не надо бегать в другую таблицу за списком объектов, они уже все хранятся через метод findAll();
+
+<td th:text="${t.getLanguage().getName()}"></td>
+
+8. меняем также отображение на details
+
+9. Создаем сервис для новой сущности, добавляем зависимость репозитория, также создаем метод на подтягивания вез объектов:
+
+ @Autowired
+     private LanguageRepository repository;
+
+    public List<Language> getLanguages(){
+        return repository.findAll();
+    }
+
+10. в контроллере в главном методе, отправляем список всех языков:
+
+@GetMapping("/")
+    public String homePage(Model model) {
+        var teachers = teacherService.getTeachers();
+        var languages = languageService.getLanguages();
+        model.addAttribute("list", teachers);
+        model.addAttribute("listLanguages", languages);
+        return "home";
+    }
+
+
+11. на страничке добавления добавляем select со списком всех языков:
+
+  <select name="language.id">
+        <option th:each="lang: ${listLanguages}" th:text="${lang.name}" th:value="${lang.id}"></option>
+    </select>
+
+
+отправляем как name = "language.id"
+
+
+метод save врутри себя все реализует с добавлением
+
+
+12.меняем языки в детаилс 
+
+отправляем на странциу детаилс в контроллере:
+
+  model.addAttribute("teacher", teacher);
+  model.addAttribute("listLanguages", languages);
+
+добавляем на html details:
+
+ <select name="language.id">
+        <option th:each="lang: ${listLanguages}"
+                th:value="${lang.id}"
+                th:text="${lang.name}"
+                th:selected="${lang.id==teacher.language.id}"></option>
+    </select>
+
+
+13. Создадим новую сущность Company, в которой будет реализована вложенность других сущностей
+
+  
+
+@OneToMany(mappedBy = "publisher", cascade = CascadeType.ALL)
+    private List<Book> books = new ArrayList<>();
+
+ @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    private List<Chapter> chapters = new ArrayList<>();

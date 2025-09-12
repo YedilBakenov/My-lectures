@@ -1,0 +1,171 @@
+@ManyToMany
+
+Аннотация @ManyToMany в Spring Framework используется для настройки отношения многие-ко-многим между двумя сущностями в базе данных.
+Это отношение означает, что одна запись в таблице A может быть связана с множеством записей в таблице B, и наоборот.
+
+Допустим, у нас есть две сущности: Student и Course. Каждый студент может посещать множество курсов,
+и каждый курс может быть посещён множеством студентов.
+
+Student 
+@ManyToMany
+private Set<Course> courses = new HashSet<>();
+
+1. показать в гугл таблице как идет связка
+
+2. Создаем сущность ClassRoom(Класс или аудитория)
+Каждый учитель может преподавать в нескольких классах или аудиториях, и в каждом классе могут преподавать разные учителя.
+
+
+@Entity
+@Table(name = "CLASSROOMS")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class ClassRoom {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private int id;
+
+    @Column(name = "CAPACITY")
+    private int capacity;
+
+    @Column(name = "NUMBER_CLASS")
+    private int numberClass;
+}
+
+
+
+3. Добавляем параметр в teacher и связываем его через @ManyToMany: - отправляем коллекцию
+	
+@ManyToMany
+private List<ClassRoom>classRooms;
+
+
+4. вручную заполняем таблицы
+
+5. создаем репозиторий для новой сущности:
+
+@Repository
+public interface ClassRoomRepository extends JpaRepository<ClassRoom, Integer> {
+}
+
+6.Создаем сервис для ClassRoom, внедряем там завсимость репозитория:
+
+@Service
+public class ClassRoomService {
+    @Autowired
+    ClassRoomRepository classRoomRepository;
+    
+    public List<ClassRoom> getAllClassRooms(){
+        return classRoomRepository.findAll();
+    }
+}
+
+7. В контролле внедряем зависимость сервиса:
+    @Autowired
+    private ClassRoomService classRoomService;
+
+
+8. закидываю в контроллере в details:
+
+var classRooms = classRoomService.getAllClassRooms();
+model.addAttribute("listClassRooms", classRooms);
+
+9. на html details добавляю и отправляю данные новым запросом post:
+
+<div class="row">
+    <div class="col-4">
+        <table class="table">
+            <tr th:each="class: ${listClassRooms}">
+                <form th:action="@{'/assign-class'}" method="post">
+                    <input type="hidden" name="teacher_id" th:value="${teacher.getId()}">
+                    <input type="hidden" name="class_id" th:value="${class.getId()}">
+                    <td th:text="${class.getId()}"></td>
+                    <td th:text="${class.getCapacity()} + '/' + 'кол-во мест'"></td>
+                    <td th:text="${class.getNumberClass()} + '/' + 'номер класса'"></td>
+                    <td>
+                        <button class="btn btn-success btn-sm"> >>> </button>
+                    </td>
+                </form>
+            </tr>
+        </table>
+    </div>
+</div>
+
+10. создаем новый запрос в контроллере assign-class, который принимает две id:
+также добавляем новый метод по получению объекта classRooms по id:
+   	
+    в сервисе:  
+  
+    public ClassRoom getById(int id){
+        return classRoomRepository.findById(id).orElse(null);
+    }
+
+   в контроллере:
+
+ @PostMapping("/assign-class")
+    public String assignClassRoom(@RequestParam(name = "teacher_id")int teacherId,
+                         @RequestParam(name = "class_rooms_id") int id){
+
+        Teacher teacher = teacherService.getTeacher(teacherId);
+        ClassRoom classRoom = classRoomService.getById(id);
+
+        if(teacher.getClassRooms()!=null && teacher.getClassRooms().size()>0){
+            teacher.getClassRooms().add(classRoom);
+        }else {
+            List<ClassRoom> classRoomList = new ArrayList<>();
+            classRoomList.add(classRoom);
+            teacher.setClassRooms(classRoomList);
+        }
+        teacherService.addTeacher(teacher);
+        return "redirect:/teacher/" + teacherId;
+    }
+
+11. добавляем в details html:
+
+
+    <div class="col-4">
+        <table class="table">
+            <tr th:each="class: ${teacher.getClassRooms()}">
+                <form th:action="@{'/unassign-class'}" method="post">
+                    <td>
+                        <button class="btn btn-danger btn-sm"> <<<</button>
+                    </td>
+                    <input type="hidden" name="teacher_id" th:value="${teacher.getId()}">
+                    <input type="hidden" name="class_rooms_id" th:value="${class.getId()}">
+                    <td th:text="${class.getId()}"></td>
+                    <td th:text="${class.getCapacity()} + '/' + 'кол-во мест'"></td>
+                    <td th:text="${class.getNumberClass()} + '/' + 'номер класса'"></td>
+                </form>
+            </tr>
+        </table>
+    </div>
+
+
+12. в запросе details удаляем повторяющиеся элементы в коллекции:
+
+добавляем строки в контроллее запроса:
+
+var classRooms = classRoomService.getAllClassRooms();
+classRooms.removeAll(teacher.getClassRooms());
+
+
+13.  создаем новый запрос в контроллере:
+
+@PostMapping("/unassign-class")
+    public String unassignClassRoom(@RequestParam(name = "teacher_id")int teacherId,
+                                  @RequestParam(name = "class_rooms_id") int id){
+
+        Teacher teacher = teacherService.getTeacher(teacherId);
+        ClassRoom classRoom = classRoomService.getById(id);
+
+        if(teacher.getClassRooms()!=null && teacher.getClassRooms().size()>0){
+            teacher.getClassRooms().remove(classRoom);
+        }
+        teacherService.addTeacher(teacher);
+        return "redirect:/teacher/" + teacherId;
+    }
+
+	

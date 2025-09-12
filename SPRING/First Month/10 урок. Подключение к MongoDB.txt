@@ -1,0 +1,134 @@
+Введение в MongoDB
+
+MongoDB - это нереляционная (NoSQL) база данных, которая хранит данные в виде документов формата JSON (BSON - бинарное представление JSON). MongoDB отличается от традиционных реляционных баз данных тем, что не использует таблицы и схемы, а вместо этого работает с коллекциями и документами.
+
+Основные особенности MongoDB
+
+Хранение данных в виде документов: Данные представляются в формате JSON (BSON) и хранятся в коллекциях.
+
+Отсутствие жесткой схемы: Коллекции могут содержать документы с разной структурой.
+
+Горизонтальное масштабирование: Поддержка шардинга (разделение данных на несколько серверов).
+
+Встроенная поддержка репликации: Позволяет организовать отказоустойчивые кластеры.
+
+Гибкая и мощная система запросов: Поддержка операций CRUD (Create, Read, Update, Delete).
+
+Структура данных в MongoDB
+
+В MongoDB элементы хранятся в виде документов внутри коллекций. Документ представляет собой набор пар "ключ-значение". Например:
+
+
+
+Установка MongoDB
+
+MongoDB можно установить с официального сайта: https://www.mongodb.com/try/download/compass
+Установить также https://www.mongodb.com/try/download/community
+
+
+1. Создание проекта Spring Boot
+
+При создании проекта в Spring Boot необходимо выбрать следующие зависимости:
+
+Lombok
+
+Spring Web
+
+Thymeleaf
+
+Spring Data MongoDB
+
+
+
+2. Создание сущности User
+
+Создадим папку entity и в ней класс User. Класс, помеченный аннотацией @Document, представляет коллекцию документов в MongoDB.
+
+@Document(collection = "users")
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class User {
+
+    @Id
+    private String id;
+    private String username;
+    private String email;
+}
+
+
+3. Создание сущности Address
+
+@Document(collection = "addresses")
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Address {
+
+    @Id
+    private String id;
+    private String street;
+    private String city;
+    private String country;
+    private String postalCode;
+}
+
+
+4. Создание репозиториев для сущностей
+
+public interface UserRepository extends MongoRepository<User, String> {
+}
+
+Аннотация @Repository не требуется, так как MongoRepository уже предоставляет необходимые функции.
+
+
+5. Создание контроллера
+
+
+@Controller
+@RequestMapping("/users")
+public class UserController {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @GetMapping
+    public String listUsers(Model model) {
+        List<User> users = userRepository.findAll();
+        model.addAttribute("users", users);
+        return "users"; // Имя HTML-шаблона
+    }
+
+    @PostMapping("/add")
+    public String addUser(@ModelAttribute User user) {
+        userRepository.save(user);
+        return "redirect:/users";
+    }
+}
+
+
+6. Подключение к MongoDB
+
+Скопируем строку подключения MongoDB:
+
+mongodb://localhost:27017
+
+
+7. Конфигурация в application.properties
+
+server.port=8081
+spring.data.mongodb.uri=mongodb://localhost:27017/mongospring
+
+
+
+Нужно будет в ручную в компасе добавить базу данных и коллекцию
+
+
+Заключение
+
+MongoDB - это мощная NoSQL база данных, идеально подходящая для гибких и масштабируемых приложений. В отличие от реляционных баз, она предоставляет возможность хранить неструктурированные данные, а также легко масштабироваться. В связке со Spring Boot MongoDB позволяет разрабатывать современные веб-приложения с удобным управлением данными.
+

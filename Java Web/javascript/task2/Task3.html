@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task3</title>
+</head>
+<body>
+<script>
+    ex6();
+    ex5();
+    ex4();
+    let n = prompt();
+    let arr = [];
+    let b;
+    let sum = 0;
+    let average;
+    for (let i = 0; i < n; i++) {
+        b = prompt() * 1;
+        arr.push(b);
+        sum += b;
+    }
+    alert(sum + " " + sum / n);
+
+    function ex4() {
+        let n = prompt();
+        let arr = [];
+        let a;
+        let square = [];
+        for (let i = 0; i < n; i++) {
+            a = prompt() * 1
+            arr.push(a)
+            square += arr[i] * arr[i] + " "
+        }
+        alert(square)
+    }
+
+    function ex5() {
+        let login = prompt()
+        let password = prompt()
+        let user = [{"login": "ilyas", "password": "qwerty"},
+            {"login": "eldar", "password": "qqqqq"},
+            {"login": "assylkhan", "password": "qweqwe"},
+            {"login": "anel", "password": "asdasd"},
+            {"login": "alibek", "password": "aaaaaa"}
+        ];
+
+        let isFound = false;
+        for (let i = 0; i < user.length; i++)
+            if (user[i]["login"].localeCompare(login) == 0 && user[i]["password"].localeCompare(password) == 0) isFound = true
+        if (isFound) alert("Welcome, you are authenticated ")
+        else alert("User not found")
+    }
+
+    function ex6() {
+        let author = prompt("Write Author")
+        let books = [{"title": "Harry Potter and the Philosopher's Stone", "author": "Joanne Rowling", "ISBN": "1233123", "price": "50$"},
+            {"title": "Harry Potter and the Chamber of Secrets", "author": "Joanne Rowling", "ISBN": "222332", "price": "40$"},
+            {"title": "Harry Potter and the Prisoner of Azkaban", "author": "Joanne Rowling", "ISBN": "452323", "price": "55$"},
+            {"title": "Graf of Monte-Cristo", "author": "Aleksandr Duma", "ISBN": "345222", "price": "59$"},
+            {"title": "Flowers for elgeron", "author": "Daniel Keyes", "ISBN": "562888", "price": "89$"},
+        ];
+
+
+        let massiv="";
+        for (let i = 0; i < books.length; i++) {
+            if(author==books[i].author)
+             massiv += books[i].title + " " + books[i].author + " " + books[i].ISBN + " " + books[i].price + "\n";
+        }
+        alert(massiv)
+    }
+</script>
+</body>
+</html>

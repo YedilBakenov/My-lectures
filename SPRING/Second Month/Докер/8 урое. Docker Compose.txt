@@ -1,0 +1,147 @@
+Docker Compose — это инструмент для определения и управления многоконтейнерными приложениями Docker. 
+Он позволяет вам использовать файл YAML для конфигурации сервисов вашего приложения, а затем создавать и запускать 
+все сервисы из вашей конфигурации с помощью одной команды. Docker Compose облегчает разработку, тестирование 
+и развертывание приложений, состоящих из множества контейнеров, делая управление ими более удобным и автоматизированным.
+
+Основные возможности Docker Compose включают:
+
+Определение многоконтейнерных приложений: С помощью Docker Compose вы можете определить различные сервисы, 
+которые составляют ваше приложение, в одном файле (docker-compose.yml), указав настройки, такие как образы Docker, 
+порты, объемы и переменные среды, необходимые для каждого сервиса.
+
+Управление жизненным циклом приложения: Docker Compose позволяет одной командой собирать образы, создавать 
+и запускать контейнеры, останавливать их и удалять все ресурсы, связанные с вашим приложением.
+
+Удобство разработки: Разработчики могут легко запускать свое приложение в среде, максимально приближенной к 
+продакшну, на своем локальном компьютере. Это обеспечивает единообразие среды разработки и тестирования, уменьшая "работает у меня" проблемы.
+
+Масштабируемость: Docker Compose поддерживает масштабирование сервисов, позволяя легко увеличивать или уменьшать количество экземпляров сервиса.
+
+
+
+Практика:
+
+
+Сделать отражение вывода из базы в спринге
+
+1. создаем jar файл из того же проекта, так как мы добавили новый зависимости в него
+
+gradle -> bootJar
+
+заменяю данным файл предыдущий, в папке docker
+
+2. удаляем контейнер docker rm 
+   удаляем образ docker rmi
+		
+3. также удаляем контейнер и образ postgres
+
+4. снова создаем образ проекта, но сначала переходим снова в папку с файлами через терминал:
+docker build -t spring-n-iso .	
+
+5. создаем файл docker-compose.yml внутри папки docker
+ где у нас будет и контейнер приложения спринга и контейнер postgres:
+
+version: '3.8'
+
+services:
+  backend:
+    image: 'spring-iso'
+    container_name: 'self-generated-backend-container'
+    depends_on:
+      - pgdb
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://pgdb:5432/bitlab
+    ports:
+      - 8081:8080
+
+  pgdb:
+    image: postgres
+    container_name: 'pg-container'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=bitlab
+    ports:
+      - 2345:5432
+
+
+
+
+6.1 docker compose up -d
+
+	
+6. если вылазят ошбки можно посмотреть их череез docker logs 'название контейнера'
+
+либо пересобрать компос:
+
+docker-compose down
+docker-compose up -d
+
+7. открыть локалхост и должно запуститься приложение
+
+8. останавливаем все образы docker stop
+docker stop c506c83db77e 9b3fca250fe6
+
+9. открыть https://hub.docker.com/ и начнем заливать контрейнеры
+чтобы залить контейнер надо создать дополнительный образ :
+
+docker tag spring-boot-iso yedilbakenov/docker-backend 
+
+залить образ:
+
+docker login -u yedilbakenov
+
+
+docker push yedilbakenov/docker-backend
+
+
+docker pull yedilbakenov/example:latest - спуливаем образ
+docker images - смотрим, что он появился
+
+
+
+10. удаляем все образы и контейнеры
+
+11. изменяем yml файл:
+
+
+version: '3.8'
+
+services:
+  backend:
+    image: 'yedilbakenov/docker-backend'
+    container_name: 'self-generated-backend-container'
+    depends_on: 
+      - pgdb
+    environment: 
+      - SERVER_PORT=8080
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://pgdb:5432/postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=false
+    ports:
+      - 8081:8080
+
+  pgdb:
+    image: postgres
+    container_name: 'pg-container'
+    environment: 
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=bitlab
+    ports:
+      - 2345:5432
+
+12. docker compose up -d
+
+
+
+
+
+
+
+6. 

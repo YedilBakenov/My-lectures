@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form id="myform" style="display: flex;">
+    <div style="flex-wrap: wrap; margin-left: 20px">
+        Введите сумму: <br>
+
+        <input type="number" name="sum" oninput="changeCurrency()" id="number">
+        <select id="id" oninput="changeCurrency()">
+            <option>KZT</option>
+            <option>USD</option>
+            <option>EUR</option>
+        </select>
+    </div>
+
+    <div style="flex-wrap: wrap; margin-left: 20px">
+        KZT (tenge): <br>
+        <input type="text" disabled id="kzt">
+    </div>
+    <div style="flex-wrap: wrap; margin-left: 20px">
+        USD (dollar): <br>
+        <input type="text" disabled id="usd">
+    </div>
+    <div style="flex-wrap: wrap; margin-left: 20px">
+        EUR (euro): <br>
+        <input type="text" disabled id="eur">
+    </div>
+</form>
+</body>
+
+<script>
+    function changeCurrency() {
+        if (id.value == "KZT") {
+            usd.value = (number.value / 431).toFixed(2);
+            eur.value = (number.value / 509).toFixed(2);
+            kzt.value = "-";
+        }
+        if (id.value == "USD") {
+            kzt.value = (number.value * 431).toFixed(2);
+            eur.value = (number.value * 509).toFixed(2);
+            usd.value = "-"
+        }
+        if (id.value == "EUR") {
+            kzt.value = (number.value*509).toFixed(2);
+            eur.value = "-";
+            usd.value = (number.value*509/431).toFixed(2);
+        }
+    }
+</script>
+</html>

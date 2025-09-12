@@ -1,0 +1,75 @@
+1. Скачиваем Docker:
+https://www.docker.com/products/docker-desktop/
+
+https://hub.docker.com/
+
+
+java -jar demo-0.0.1-SNAPSHOT.jar
+
+Запускаем докер
+
+2.Создаем самый простой проект spring boot в start.spring.io
+web, thymeleaf, lombock
+
+Создаем кастомную страницу с приветствием
+
+3. Создание в формате bootJar
+
+gradle -> Tasks -> build -> bootJar 
+
+название проекта -> build -> libs -> копируем файл
+
+вставляем файл в новую папку в директории IdeaProjects
+
+4. в новой директории создаем новый файл как тектовый - Dockerfile, но затем удаляем разрешение у него:
+
+FROM openjdk:17-oracle
+MAINTAINER yedil
+COPY back.jar my-spring.jar    - 'back' - я заменил название файла, 'my-spring.jar' - новое название файла
+ENTRYPOINT ["java", "-jar", "my-spring.jar"]
+
+
+5. открываем командную строку и прописываем в директории, которую создали до этого:
+
+docker build -t spring-boot-iso . - кастомное название образа
+
+6. docker images - просмотр всех images
+
+7. docker rmi 'номер id докера' - удаление образа
+   
+   docker rm - удаление контейнера
+
+8. docker rmi -f d2c94e258dcb - принудительное удаление образа
+
+9. docker run --name springboot-container -p8003:8080 spring-boot-iso
+
+10. docker ps - показывает активные запущенные образы
+
+11. docker ps -a - показывает все подряд образы, запущенные и нет - отсюда выбираем id контейнера, чтобы его запустить
+
+12. docker start 'id' - запускает контейнер
+
+13. docker stop 'id' - останавливаем контейнер
+
+14. docker pull postgres - скачивает постгрес 
+
+15. docker run -d --name my-db -e POSTGRES_PASSWORD=qwe -p2345:5432 postgres
+
+16. можно запустить в проекте теперь базу с паролем qwe, user name - postgres, port = 2345
+
+17. docker logs e3611b5d5d1a - просмотр логов контейнера
+
+18. docker stats - Мониторинг запущенных контейнеров
+
+19. docker restart e3611b5d5d1a064f842149d410df8 - перезагружает контейнер докера
+
+
+FROM openjdk:17-oracle
+WORKDIR /app
+LABEL maintainer="yedil.bakenov@gmail.com"
+COPY /build/libs/demo-0.0.1-SNAPSHOT.jar /app/demo-jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "demo-jar"]
+
+
+

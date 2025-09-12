@@ -1,0 +1,216 @@
+Добавление блога, новостей
+1. Добавляем в navbar новую ссылку ADD NEWS
+
+2. Создаем новый сервлет AddNewsServlet в doGet, который будет виден только для тех кто зашел под своим аккаунтом
+
+	User user = (User) request.getSession().getAttribute("currentUser");
+
+        if(user !=null){
+		
+		String title = request.getParametr("title"); - это после создания модели и т.д  уже прописать
+		Stirng content - request.getParametr("content);
+
+		News news = new News();
+		news.setTitle(title);
+		news.setContent(content);
+		news.setUser(user);
+
+		DBConnection.addNews(news);				
+
+            	responce.sendRedirect("/add-news-page")
+        }else {
+            response.sendRedirect("/login");
+        }	
+
+3. Создаем таблицу новостей(id,title,content(text), post_date(timestamp ), user_id
+
+4. Создаем форейн-кейн - user_id -> modify_column -> Foreign Key -> + - > target table: users
+SQL SCRIPT - > foreign key(user_id) references users (id) -> execute
+
+5. Создаем jsp addnews
+добавляем только title и (text),content, 
+
+используем textarea rows-10 для content	
+post_date - автоматически фиксирует время
+
+6. Не добавляем поле автор в jsp, так как возьмет user из сессии и свяжет с ним добавленный пост
+
+7. Создаем модель(класс) News
+private int id;
+private String title;
+private String content;
+private User user;	
+private Timestamp postDate;(SQL)
+
+8.Добавить новый метод в DBConnection: addNews(News news)
+INSERT INTO news (title, content, post_date, user_id)
+VALUES(?,?,NOW(), ?)
+
+statement.setString(1, news.getTitle());
+statement.setContent(2, news.getContent());
+statement.setContent(3, news.getUser().getId);
+
+8. Создать в навбаре all News 
+
+10. Создаем NewsServlet
+	
+10. Создаем news.jsp 
+
+11. Создаем метод в DBConnector, который подтягивает все новости
+public static Arraylist<News> getNews();
+
+SELECT n.id, n.title, n.content, n.post_date, n.user_id, u.email, u.full_name
+FROM news n
+INNER JOIN users u ON u.id = n.user_id
+ORDER BY n.post_date DESC
+
+while (resultSet.next()) {
+                News n= new News();
+                n.setId(resultSet.getInt("id"));
+                n.setContent(resultSet.getString("content"));
+                n.setTitle(resultSet.getString("title"));
+              	n.setPostDate(resultSet.getTimestamp("post_date"));
+
+                User user = new User();
+                user.setFull_name(resultSet.getString("full_name"));
+                user.setId(resultSet.getInt("user_id"));
+
+                n.setUser(user);
+                news.add(n);
+            }
+
+пароль не нужен, так как мы используем тут только для отображения
+	
+12. Создаем news.jsp
+<%
+                ArrayList<News> news = (ArrayList<News>) request.getAttribute("news");
+                if (news != null) {
+                    for (News n : news) {
+            %>
+            <div class="p-5 mb-3" style="background-color: rgba(141,78,94,0.76)">
+                <a href="/news-details?id=<%=n.getId()%>" class="text-decoration-none"><h3 class="text-light"><%=n.getTitle()%></h3></a>
+                <p><%=n.getContent()%></p>
+                <p>Posted by <strong><%=n.getUser().getFull_name()%></strong>At <strong><%=n.getPostDate()%></strong></p>
+            </div>
+            <%
+                    }
+                }
+            %>
+
+13. Создаем сервлет news-details
+ int id = Integer.parseInt(request.getParameter("id"));
+        News news = DBConnector.getNewsById(id);
+        request.setAttribute("news", news);
+	request.getReauestDispatcher("/newsdetails.jsp").forward(request, responce);
+
+14. Создаем в DBConnector метод на выдергивание новости
+public static News getNewsById(int id) {
+        News news = null;
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM news n " +
+                    "INNER JOIN users u on u.id = n.user_id WHERE n.id = ?");
+
+            statement.setInt(1, id);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                news = new News();
+                news.setId(resultSet.getInt("id"));
+                news.setContent(resultSet.getString("content"));
+                news.setTitle(resultSet.getString("title"));
+                news.setPostDate(resultSet.getTimestamp("post_date"));
+
+                User user = new User();
+                user.setFull_name(resultSet.getString("full_name"));
+                user.setId(resultSet.getInt("user_id"));
+
+                news.setUser(user);
+
+            }
+            statement.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return news;
+    }
+	
+15. Создаем newsdetails.jsp
+<%
+                News news = (News) request.getAttribute("news");
+                if (news != null) {
+            %>
+            <div class="p-5 mb-3" style="background-color: rgba(141,78,94,0.76)">
+                <a class="text-decoration-none"><h3 class="text-light"><%=news.getTitle()%></h3></a>
+                <p><%=n.getContent()%></p>
+                <p>Posted by <strong><%=news.getUser().getFull_name()%></strong>At <strong><%=news.getPostDate()%></strong></p>
+            </div>
+            <%
+                }
+            %>
+
+16. Только автор может редактировать пост и тот кто аутенцирован
+В jsp newsdetails добавляем проверку if
+
+if(currentUser!=null && currentUser.getId()==n.getUser().getId())
+
+добавляем модалку на редактирование, которая будет видна только после выше if
+
+в модалке пердаем hidden id news
+
+
+18. jsp newsdetails также добавляем возможность удаления новости для автора новости
+<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#editNews">
+                        EDIT
+                    </button>
+                    <form action="/delete-news" method="post">
+                        <input type="hidden" name="id" value="<%=news.getId()%>">
+                        <button class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+
+18.1 создаем delete servlet
+
+18.2 добаляем новый метод на удаление новости в DBConnection
+
+17. Создаем сервлет UpdateNews
+User user = (User) request.getSession().getAttribute("currentUser");
+        if (user != null) {
+            String title = request.getParameter("title");
+            String content = request.getParameter("content");
+            int id = Integer.parseInt(request.getParameter("id"));
+
+            News news = DBConnector.getNewsById(id);
+            if (news != null) {
+                news.setTitle(title);
+                news.setContent(content);
+                news.setUser(user);
+
+                DBConnector.updateNews(news);
+
+                response.sendRedirect("/news-details?id="+id);
+            } else {
+                response.sendRedirect("/");
+            }
+        }
+
+
+18. Создаем метод updateNews в DMConnection
+в котором меняем только title и content
+public static void updateNews(News news) {
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(""+
+                    "UPDATE news SET title = ?, content = ? WHERE id = ?");
+
+            statement.setString(1, news.getTitle());
+            statement.setString(2, news.getContent());
+            statement.setInt(3, news.getId());
+
+            statement.executeUpdate();
+            statement.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
