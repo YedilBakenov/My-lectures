@@ -1,4 +1,4 @@
-{\rtf1\ansi\ansicpg1251\cocoartf2761
+{\rtf1\ansi\ansicpg1251\cocoartf2821
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 Courier;\f1\froman\fcharset0 Times-Roman;\f2\froman\fcharset0 Times-Bold;
 \f3\fmodern\fcharset0 Courier-Oblique;\f4\fswiss\fcharset0 Helvetica;\f5\fnil\fcharset0 Menlo-Regular;
 }
@@ -6,14 +6,13 @@
 \red140\green119\blue13;\red114\green0\blue130;\red17\green109\blue18;\red18\green51\blue230;}
 {\*\expandedcolortbl;;\csgenericrgb\c3529\c3529\c3529;\csgenericrgb\c0\c11373\c64314;\csgenericrgb\c3922\c30980\c40392;
 \csgenericrgb\c54902\c46667\c5098;\csgenericrgb\c44706\c0\c50980;\csgenericrgb\c6667\c42745\c7059;\csgenericrgb\c7059\c20000\c90196;}
-\paperw11900\paperh16840\margl1440\margr1440\vieww27100\viewh16520\viewkind0
+\paperw11900\paperh16840\margl1440\margr1440\vieww17960\viewh19820\viewkind0
 \deftab720
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
 
 \f0\fs28 \cf2 implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
 {\field{\*\fldinst{HYPERLINK "http://localhost:8080/swagger-ui/index.html"}}{\fldrslt \cf2 http://localhost:8080/swagger-ui/index.html}}\
-\
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
 
@@ -174,8 +173,10 @@ exception.EntityNotFoundException\
 \f5 \uc0\u1089 
 \f0  
 \f5 \uc0\u1087 \u1088 \u1086 \u1076 \u1091 \u1082 \u1090 \u1072 \u1084 \u1080 
-\f0 \'bb)\
+\f0 \'bb) \uc0\u1085 \u1072 \u1076  \u1082 \u1083 \u1072 \u1089 \u1089 \u1086 \u1084  DTO\
 \
+\
+\uc0\u1042  \u1082 \u1086 \u1085 \u1090 \u1088 \u1086 \u1083 \u1083 \u1077 \u1088 \u1077 \
 8. 
 \fs34 \cf5 @Tag\cf2 (name = \cf7 "/ProductController"\cf2 , description = \cf7 "API 
 \f5 \uc0\u1076 \u1083 \u1103 
@@ -184,8 +185,9 @@ exception.EntityNotFoundException\
 \f0  
 \f5 \uc0\u1073 \u1088 \u1077 \u1085 \u1076 \u1072 \u1084 \u1080 
 \f0  "\cf2 )\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
 
-\f5 \uc0\u1076 \u1086 \u1073 \u1072 \u1074 \u1083 \u1103 \u1077 \u1084 
+\f5 \cf2 \uc0\u1076 \u1086 \u1073 \u1072 \u1074 \u1083 \u1103 \u1077 \u1084 
 \f0  
 \f5 \uc0\u1076 \u1072 \u1085 \u1085 \u1091 \u1102 
 \f0  
@@ -196,6 +198,7 @@ exception.EntityNotFoundException\
 \f5 \uc0\u1082 \u1086 \u1085 \u1090 \u1088 \u1086 \u1083 \u1083 \u1077 \u1088 \u1072 
 \f0 \
 \
+\uc0\u1042  \u1082 \u1086 \u1085 \u1090 \u1088 \u1086 \u1083 \u1083 \u1077 \u1088 \u1077 , \u1085 \u1072 \u1076  \u1079 \u1072 \u1087 \u1088 \u1086 \u1089 \u1072 \u1084 \u1080 \
 9. \cf5 @Operation\cf2 (summary = \cf7 "
 \f5 \uc0\u1055 \u1086 \u1083 \u1091 \u1095 \u1077 \u1085 \u1080 \u1077 
 \f0  
@@ -249,17 +252,11 @@ exception.EntityNotFoundException\
 \})\
 \
 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
-
-\f4 \cf2 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
-
-\f0 \cf3 private final \cf0 ProductRepository \cf6 productRepository\cf2 ;\
+\uc0\u1053 \u1072  \u1089 \u1077 \u1088 \u1074 \u1080 \u1089 \u1077 \
+\cf3 private final \cf0 ProductRepository \cf6 productRepository\cf2 ;\
 \cf3 private \cf0 EntityManager \cf6 entityManager\cf2 ;\
 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
 \cf5 @Override\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
 \cf3 public \cf0 List\cf2 <\cf0 Product\cf2 > \cf4 findAll\cf2 (\cf0 String name\cf2 , \cf0 Double price\cf2 , \cf0 String description\cf2 ) \{\
     \cf0 CriteriaBuilder cb \cf2 = \cf6 entityManager\cf2 .getCriteriaBuilder();\
     \cf0 CriteriaQuery\cf2 <\cf0 Product\cf2 > \cf0 query \cf2 = \cf0 cb\cf2 .createQuery(\cf0 Product\cf2 .\cf3 class\cf2 );\

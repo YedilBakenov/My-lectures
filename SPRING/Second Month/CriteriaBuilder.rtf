@@ -1,17 +1,17 @@
-{\rtf1\ansi\ansicpg1251\cocoartf2761
+{\rtf1\ansi\ansicpg1251\cocoartf2821
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 Courier;\f1\froman\fcharset0 Times-Roman;\f2\froman\fcharset0 Times-Bold;
 \f3\fmodern\fcharset0 Courier-Bold;\f4\fmodern\fcharset0 Courier-Oblique;\f5\fnil\fcharset0 Menlo-Italic;
 \f6\fnil\fcharset0 Menlo-Regular;}
-{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red0\green29\blue164;\red9\green9\blue9;
-\red10\green79\blue103;\red140\green119\blue13;\red114\green0\blue130;\red121\green121\blue121;\red17\green109\blue18;
-\red18\green51\blue230;}
-{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\csgenericrgb\c0\c11373\c64314;\csgenericrgb\c3529\c3529\c3529;
-\csgenericrgb\c3922\c30980\c40392;\csgenericrgb\c54902\c46667\c5098;\csgenericrgb\c44706\c0\c50980;\csgenericrgb\c47451\c47451\c47451;\csgenericrgb\c6667\c42745\c7059;
-\csgenericrgb\c7059\c20000\c90196;}
+{\colortbl;\red255\green255\blue255;\red0\green29\blue164;\red9\green9\blue9;\red10\green79\blue103;
+\red140\green119\blue13;\red114\green0\blue130;\red121\green121\blue121;\red17\green109\blue18;\red18\green51\blue230;
+}
+{\*\expandedcolortbl;;\csgenericrgb\c0\c11373\c64314;\csgenericrgb\c3529\c3529\c3529;\csgenericrgb\c3922\c30980\c40392;
+\csgenericrgb\c54902\c46667\c5098;\csgenericrgb\c44706\c0\c50980;\csgenericrgb\c47451\c47451\c47451;\csgenericrgb\c6667\c42745\c7059;\csgenericrgb\c7059\c20000\c90196;
+}
 {\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid1\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}
 {\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid101\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}}
 {\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}}
-\paperw11900\paperh16840\margl1440\margr1440\vieww20480\viewh15720\viewkind0
+\paperw11900\paperh16840\margl1440\margr1440\vieww31120\viewh22680\viewkind0
 \deftab720
 \pard\pardeftab720\partightenfactor0
 
@@ -77,8 +77,8 @@ Order
 \cf0 \ul 3. \uc0\u1057 \u1086 \u1079 \u1076 \u1072 \u1085 \u1080 \u1077  \u1088 \u1077 \u1087 \u1086 \u1079 \u1080 \u1090 \u1086 \u1088 \u1080 \u1103 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
 
-\f0 \cf3 \kerning1\expnd0\expndtw0 \ulnone public interface \cf0 StudentRepositoryCustom \cf4 \{\
-    \cf0 List\cf4 <\cf0 Student\cf4 > \cf5 findStudentMoreGpaThan\cf4 (\cf3 double \cf0 gpa\cf4 );\
+\f0 \cf2 \kerning1\expnd0\expndtw0 \ulnone public interface \cf0 StudentRepositoryCustom \cf3 \{\
+    \cf0 List\cf3 <\cf0 Student\cf3 > \cf4 findStudentMoreGpaThan\cf3 (\cf2 double \cf0 gpa\cf3 );\
     List<Student>getStudentByGpaOrCity(Double gpa, String cityName);\
     List<Student> getSortedById();\
 \
@@ -92,23 +92,23 @@ Order
 \f3\b CriteriaBuilder\ulnone \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
 
-\f0\b0 \cf6 \kerning1\expnd0\expndtw0 @Repository\
+\f0\b0 \cf5 \kerning1\expnd0\expndtw0 @Repository\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
-\cf3 public class \cf0 StudentRepositoryCustom \cf4 \{\
+\cf2 public class \cf0 StudentRepositoryCustom \cf3 \{\
 \
-    \cf6 @PersistenceContext\
-    \cf3 private \cf0 EntityManager \cf7 entityManager\cf4 ;\
+    \cf5 @PersistenceContext\
+    \cf2 private \cf0 EntityManager \cf6 entityManager\cf3 ;\
 \
-    \cf3 public \cf0 List\cf4 <\cf0 Student\cf4 > \cf5 findStudentMoreGpaThan\cf4 (\cf3 double \cf0 gpa\cf4 )\{\
-        \cf0 CriteriaBuilder cb \cf4 = \cf7 entityManager\cf4 .getCriteriaBuilder(); 
-\f4\i \cf8 //
+    \cf2 public \cf0 List\cf3 <\cf0 Student\cf3 > \cf4 findStudentMoreGpaThan\cf3 (\cf2 double \cf0 gpa\cf3 )\{\
+        \cf0 CriteriaBuilder cb \cf3 = \cf6 entityManager\cf3 .getCriteriaBuilder(); 
+\f4\i \cf7 //
 \f5 \uc0\u1055 \u1086 \u1083 \u1091 \u1095 \u1072 \u1077 \u1084 
 \f4  CriteriaBuilder 
 \f5 \uc0\u1080 \u1079 
 \f4  EntityManager.\
         
-\f0\i0 \cf0 CriteriaQuery\cf4 <\cf0 Student\cf4 > \cf0 query \cf4 = \cf0 cb\cf4 .createQuery(\cf0 Student\cf4 .\cf3 class\cf4 ); 
-\f4\i \cf8 //
+\f0\i0 \cf0 CriteriaQuery\cf3 <\cf0 Student\cf3 > \cf0 query \cf3 = \cf0 cb\cf3 .createQuery(\cf0 Student\cf3 .\cf2 class\cf3 ); 
+\f4\i \cf7 //
 \f5 \uc0\u1057 \u1086 \u1079 \u1076 \u1072 \u1105 \u1084 
 \f4  CriteriaQuery<User>, 
 \f5 \uc0\u1091 \u1082 \u1072 \u1079 \u1099 \u1074 \u1072 \u1103 
@@ -120,8 +120,8 @@ Order
 \f5 \uc0\u1089 
 \f4  Student.\
         
-\f0\i0 \cf0 Root\cf4 <\cf0 Student\cf4 > \cf0 root \cf4 = \cf0 query\cf4 .from(\cf0 Student\cf4 .\cf3 class\cf4 ); 
-\f4\i \cf8 //
+\f0\i0 \cf0 Root\cf3 <\cf0 Student\cf3 > \cf0 root \cf3 = \cf0 query\cf3 .from(\cf0 Student\cf3 .\cf2 class\cf3 ); 
+\f4\i \cf7 //
 \f5 \uc0\u1057 \u1086 \u1079 \u1076 \u1072 \u1105 \u1084 
 \f4  Root<User> \'97 
 \f5 \uc0\u1082 \u1086 \u1088 \u1077 \u1085 \u1100 
@@ -130,18 +130,18 @@ Order
 \f4 .\
 \
         
-\f0\i0 \cf0 Predicate gpaPredicate \cf4 = \cf0 cb\cf4 .greaterThan(\cf0 root\cf4 .get(\cf9 "gpa"\cf4 ), \cf0 gpa\cf4 ); 
-\f4\i \cf8 // 
+\f0\i0 \cf0 Predicate gpaPredicate \cf3 = \cf0 cb\cf3 .greaterThan(\cf0 root\cf3 .get(\cf8 "gpa"\cf3 ), \cf0 gpa\cf3 ); 
+\f4\i \cf7 // 
 \f5 \uc0\u1044 \u1086 \u1073 \u1072 \u1074 \u1083 \u1103 \u1077 \u1084 
 \f4  
 \f5 \uc0\u1091 \u1089 \u1083 \u1086 \u1074 \u1080 \u1077 
 \f4  WHERE gpa > ?.\
 \
         
-\f0\i0 \cf0 query\cf4 .select(\cf0 root\cf4 ).where(\cf0 gpaPredicate\cf4 );\
+\f0\i0 \cf0 query\cf3 .select(\cf0 root\cf3 ).where(\cf0 gpaPredicate\cf3 );\
 \
-       \cf3 return \cf7 entityManager\cf4 .createQuery(\cf0 query\cf4 ).getResultList(); 
-\f4\i \cf8 // 
+       \cf2 return \cf6 entityManager\cf3 .createQuery(\cf0 query\cf3 ).getResultList(); 
+\f4\i \cf7 // 
 \f5 \uc0\u1042 \u1099 \u1087 \u1086 \u1083 \u1085 \u1103 \u1077 \u1084 
 \f4  
 \f5 \uc0\u1079 \u1072 \u1087 \u1088 \u1086 \u1089 
@@ -149,55 +149,57 @@ Order
 \f5 \uc0\u1095 \u1077 \u1088 \u1077 \u1079 
 \f4  entityManager.createQuery().\
     
-\f0\i0 \cf4 \}\
+\f0\i0 \cf3 \}\
 \
 \}\
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
 
-\f1 \cf4 \ul 4. \uc0\u1057 \u1086 \u1079 \u1076 \u1072 \u1077 \u1084  \u1077 \u1097 \u1077  \u1076 \u1086 \u1087 \u1086 \u1083 \u1085 \u1080 \u1090 \u1077 \u1083 \u1100 \u1085 \u1099 \u1077  \u1084 \u1077 \u1090 \u1086 \u1076 \u1099  \u1074  \u1088 \u1077 \u1087 \u1086 \u1079 \u1080 \u1090 \u1086 \u1088 \u1080 \u1080 \
+\f1 \cf3 \ul 4. \uc0\u1057 \u1086 \u1079 \u1076 \u1072 \u1077 \u1084  \u1077 \u1097 \u1077  \u1076 \u1086 \u1087 \u1086 \u1083 \u1085 \u1080 \u1090 \u1077 \u1083 \u1100 \u1085 \u1099 \u1077  \u1084 \u1077 \u1090 \u1086 \u1076 \u1099  \u1074  \u1088 \u1077 \u1087 \u1086 \u1079 \u1080 \u1090 \u1086 \u1088 \u1080 \u1080 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
 
-\f0 \cf4 \ulnone \
+\f0 \cf3 \ulnone \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
-\cf6 @Override\
+\cf5 @Override\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720\pardirnatural\partightenfactor0
-\cf3 public \cf0 List\cf4 <\cf0 Student\cf4 > \cf5 findStudentsByGpaAndCity\cf4 (\cf0 Double gpa\cf4 , \cf0 String cityName\cf4 ) \{\
-    \cf0 System\cf4 .
-\f4\i \cf7 out
-\f0\i0 \cf4 .println(\cf9 "
+\cf2 public \cf0 List\cf3 <\cf0 Student\cf3 > \cf4 findStudentsByGpaAndCity\cf3 (\cf0 Double gpa\cf3 , \cf0 String cityName\cf3 ) \{\
+    \cf0 System\cf3 .
+\f4\i \cf6 out
+\f0\i0 \cf3 .println(\cf8 "
 \f6 \uc0\u1055 \u1077 \u1088 \u1077 \u1076 \u1072 \u1085 \u1085 \u1099 \u1081 
-\f0  gpa: " \cf4 + \cf0 gpa\cf4 );\
-    \cf0 CriteriaBuilder cb \cf4 = \cf7 entityManager\cf4 .getCriteriaBuilder();\
-    \cf0 CriteriaQuery\cf4 <\cf0 Student\cf4 > \cf0 query \cf4 = \cf0 cb\cf4 .createQuery(\cf0 Student\cf4 .\cf3 class\cf4 );\
-    \cf0 Root\cf4 <\cf0 Student\cf4 > \cf0 root \cf4 = \cf0 query\cf4 .from(\cf0 Student\cf4 .\cf3 class\cf4 );\
-    \cf0 List\cf4 <\cf0 Predicate\cf4 > \cf0 predicates \cf4 = \cf3 new \cf4 ArrayList<>();\
+\f0  gpa: " \cf3 + \cf0 gpa\cf3 );\
+    \cf0 CriteriaBuilder cb \cf3 = \cf6 entityManager\cf3 .getCriteriaBuilder();\
+    \cf0 CriteriaQuery\cf3 <\cf0 Student\cf3 > \cf0 query \cf3 = \cf0 cb\cf3 .createQuery(\cf0 Student\cf3 .\cf2 class\cf3 );\
+    \cf0 Root\cf3 <\cf0 Student\cf3 > \cf0 root \cf3 = \cf0 query\cf3 .from(\cf0 Student\cf3 .\cf2 class\cf3 );\
+    \cf0 List\cf3 <\cf0 Predicate\cf3 > \cf0 predicates \cf3 = \cf2 new \cf3 ArrayList<>();\
 \
-    \cf3 if \cf4 (\cf0 gpa \cf4 != \cf3 null\cf4 ) \{\
-        \cf0 predicates\cf4 .add(\cf0 cb\cf4 .greaterThan(\cf0 root\cf4 .get(\cf9 "gpa"\cf4 ), \cf0 gpa\cf4 ));\
+    \cf2 if \cf3 (\cf0 gpa \cf3 != \cf2 null\cf3 ) \{\
+        \cf0 predicates\cf3 .add(\cf0 cb\cf3 .greaterThan(\cf0 root\cf3 .get(\cf8 "gpa"\cf3 ), \cf0 gpa\cf3 ));\
     \}\
-    \cf3 if \cf4 (\cf0 cityName \cf4 != \cf3 null\cf4 ) \{\
-        \cf0 predicates\cf4 .add(\cf0 cb\cf4 .like(\cf0 root\cf4 .join(\cf9 "cities"\cf4 , \cf0 JoinType\cf4 .
-\f4\i \cf7 LEFT
-\f0\i0 \cf4 ).get(\cf9 "name"\cf4 ), \cf9 "%" \cf4 + \cf0 cityName \cf4 + \cf9 "%"\cf4 ));\
+    \cf2 if \cf3 (\cf0 cityName \cf3 != \cf2 null\cf3 ) \{\
+        \cf0 predicates\cf3 .add(\cf0 cb\cf3 .like(\cf0 root\cf3 .join(\cf8 "cities"\cf3 , \cf0 JoinType\cf3 .
+\f4\i \cf6 LEFT
+\f0\i0 \cf3 ).get(\cf8 "name"\cf3 ), \cf8 "%" \cf3 + \cf0 cityName \cf3 + \cf8 "%"\cf3 ));\
     \}\
 \
-    \cf0 query\cf4 .select(\cf0 root\cf4 ).where(\cf0 predicates\cf4 .toArray(\cf3 new \cf4 Predicate[\cf10 0\cf4 ]));\
+    \cf0 query\cf3 .select(\cf0 root\cf3 ).where(\cf0 predicates\cf3 .toArray(\cf2 new \cf3 Predicate[\cf9 0\cf3 ]));\
 \
-    \cf3 return \cf7 entityManager\cf4 .createQuery(\cf0 query\cf4 ).getResultList();\
+    \cf2 return \cf6 entityManager\cf3 .createQuery(\cf0 query\cf3 ).getResultList();\
 \}\
 \
 \
-\cf3 public \cf0 List\cf4 <\cf0 Student\cf4 > \cf5 findAllSortedByGpa\cf4 () \{\
-    \cf0 CriteriaBuilder cb \cf4 = \cf7 entityManager\cf4 .getCriteriaBuilder();\
-    \cf0 CriteriaQuery\cf4 <\cf0 Student\cf4 > \cf0 query \cf4 = \cf0 cb\cf4 .createQuery(\cf0 Student\cf4 .\cf3 class\cf4 );\
-    \cf0 Root\cf4 <\cf0 Student\cf4 > \cf0 root \cf4 = \cf0 query\cf4 .from(\cf0 Student\cf4 .\cf3 class\cf4 );\
+\cf2 public \cf0 List\cf3 <\cf0 Student\cf3 > \cf4 findAllSortedByGpa\cf3 () \{\
+    \cf0 CriteriaBuilder cb \cf3 = \cf6 entityManager\cf3 .getCriteriaBuilder();\
+    \cf0 CriteriaQuery\cf3 <\cf0 Student\cf3 > \cf0 query \cf3 = \cf0 cb\cf3 .createQuery(\cf0 Student\cf3 .\cf2 class\cf3 );\
+    \cf0 Root\cf3 <\cf0 Student\cf3 > \cf0 root \cf3 = \cf0 query\cf3 .from(\cf0 Student\cf3 .\cf2 class\cf3 );\
 \
-    \cf0 query\cf4 .select(\cf0 root\cf4 ).orderBy(\cf0 cb\cf4 .desc(\cf0 root\cf4 .get(\cf9 "gpa"\cf4 )));\
+    \cf0 query\cf3 .select(\cf0 root\cf3 ).orderBy(\cf0 cb\cf3 .desc(\cf0 root\cf3 .get(\cf8 "gpa"\cf3 )));\
 \
-    \cf3 return \cf7 entityManager\cf4 .createQuery(\cf0 query\cf4 ).getResultList();\
+    \cf2 return \cf6 entityManager\cf3 .createQuery(\cf0 query\cf3 ).getResultList();\
 \}\
 \
+\
+5. \uc0\u1057 \u1086 \u1079 \u1076 \u1072 \u1077 \u1084  \u1077 \u1085 \u1076 \u1087 \u1086 \u1080 \u1085 \u1090 \u1099 \
 \
 @GetMapping(value = "/gpa-more")\
     public List<StudentDto> getStudentsByGpaMore(@RequestParam double gpa)\{\

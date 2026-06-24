@@ -2,6 +2,60 @@ xmlns:th="http://www.thymeleaf.org"
 
 ./gradlew build --refresh-dependencies - применение изменений
 
+19. добавляем возможность выхода на главной странице index:
+
+  <form action="/logout" method="post">
+        <button>LOG OUT</button>
+    </form>
+
+20. Создаем в контроллере страничку, на которую может попасть User только с ролью Admin:
+
+  @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping("/admin")
+    public String adminPage(){
+        return "admin-page";
+    }
+
+21. Создаем данную страничку admin-page: Пробуем зайти на нее с ролью Админа и без
+
+также добавляем ссылку на данную страницу в index:
+
+
+
+<body>
+ <h1>THIS IS ADMIN PAGE!</h1>
+   <h1 th:text="${#authentication.getPrincipal().email}"></h1>
+</body>
+
+22.создаем страницу forbidden
+		
+<body>
+ <h1>ACCESS DENIED!</h1>
+</body>
+
+23.создаем в контроллере GetMapping("/forbidden"):
+
+ @GetMapping(value = "/forbidden")
+    public String forbiddenPage(){
+        return "forbidden";
+    }
+
+
+24. Создаем в UserService метод, который будет подтягивать нам текущего USer из сессии:
+
+ public User getCurrentUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (User) authentication.getPrincipal();
+    }
+
+25. также може проверить вывод в консоли:
+ public String mainPage(){
+        System.out.println(userService.getCurrentUser().getFullName());
+        return "index";
+    }
+
+26.
+
 
 1. Создаем в контроллере новый метод, который создает нового пользователя:
 

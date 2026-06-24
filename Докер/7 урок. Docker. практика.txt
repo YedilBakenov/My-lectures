@@ -1,3 +1,6 @@
+
+
+
 1. Скачиваем Docker:
 https://www.docker.com/products/docker-desktop/
 
@@ -62,4 +65,11 @@ docker build -t spring-boot-iso . - кастомное название обра
 17.отправить имадж на докерхаб
 docker tag "название image" yedil.bakenov/"название image"
 docker push yedil.bakenov/"название image"
+
+докер файл в idea:
+FROM amazoncorretto:17
+WORKDIR /app
+COPY /build/libs/test-docker-0.0.1-SNAPSHOT.jar /app/test.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "test.jar"]
 

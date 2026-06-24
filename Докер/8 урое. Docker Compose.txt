@@ -28,11 +28,7 @@ Docker Compose — это инструмент для определения и 
 
 gradle -> bootJar
 
-
 заменяю данным файл предыдущий, в папке docker
-
-1.1 добавляю в application - настройки для подключения базы
-
 
 2. удаляем контейнер docker rm 
    удаляем образ docker rmi
@@ -73,8 +69,6 @@ services:
 
 
 
-5.1. над главным классом прописываем - @SpringBootApplication(exclude =  {DataSourceAutoConfiguration.class})
-
 
 6.1 docker compose up -d
 
@@ -100,8 +94,6 @@ docker tag spring-boot-iso yedilbakenov/docker-backend
 
 docker login -u yedilbakenov
 
-
-docker tag spring.iso yedilbakenov/spring-docker.iso
 
 docker push yedilbakenov/docker-backend
 
@@ -144,8 +136,49 @@ services:
     ports:
       - 2345:5432
 
-
-
 12. docker compose up -d
 
 
+
+
+
+Шаги:
+
+
+version: '3.0'
+
+services:
+  backend:
+    image: 'spring.iso'
+    container_name: 'spring-container'
+    depends_on:
+      
+pgdb:
+environment:
+SERVER_PORT=8080
+SPRING_DATASOURCE_USERNAME=postgres
+SPRING_DATASOURCE_PASSWORD=postgres
+SPRING_DATASOURCE_URL=jdbc://postgresql://pgdb:5433/postgres
+ports:
+8083:8080
+
+  pgdb:
+    image: postgres
+    container_name: 'basa'
+    environment:
+      
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=postgres
+ports:
+5440:5433
+
+  redis:
+    image: redis
+    container_name: 'basa2'
+    ports:
+      
+6379:6379
+
+
+6. 
